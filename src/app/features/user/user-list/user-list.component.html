@@ -1,0 +1,21 @@
+<div class="users-list">
+  <mat-card class="users-list-card">
+    <mat-nav-list>
+      <h3 mat-subheader>Personen</h3>
+      
+      <a mat-list-item class="my-list-item-link" routerLink="/main/stream" routerLinkActive="active" *ngFor="let user of users | async">
+          <mat-icon mat-list-icon>person</mat-icon>
+          <div [ngSwitch]="user.status">
+              
+   
+             <mat-icon mat-list-icon class="list-icon-on" *ngSwitchCase="'online'">fiber_manual_record</mat-icon>
+               <mat-icon mat-list-icon class="list-icon-aw" *ngSwitchCase="'away'">fiber_manual_record</mat-icon>
+               <mat-icon mat-list-icon class="list-icon-off" *ngSwitchCase="'offline'">fiber_manual_record</mat-icon>
+            </div>
+       
+        <h4 mat-line>{{user.name}}</h4>
+        <p mat-line> {{user.status}} </p>
+          </a>
+    </mat-nav-list>
+  </mat-card>
+</div>

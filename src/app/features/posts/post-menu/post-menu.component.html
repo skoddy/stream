@@ -1,0 +1,17 @@
+<div *ngIf="uid==currentUid; else notuser">
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" xPosition="before">
+    <button mat-menu-item>Bearbeiten</button>
+    <button mat-menu-item (click)="deletePost(id)">Löschen</button>
+  </mat-menu>
+</div>
+<ng-template #notuser>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu" xPosition="before">
+    <button mat-menu-item>Ausblenden</button>
+  </mat-menu>
+</ng-template>

@@ -1,0 +1,45 @@
+.stream-detail-card {
+    max-width: 500px;
+    position: inherit;
+    border-radius: 0;
+    margin-top: 16px;
+}
+.spacer {
+    flex: 1 1 auto;
+}
+.comment-list {
+    height: 100% !important;
+}
+.stream-detail-avatar {
+    background-size: cover;
+    background-image: url('https://lh6.googleusercontent.com/-7LxqbbpjO1A/AAAAAAAAAAI/AAAAAAAAAHM/USQGJVnjEEA/photo.jpg')
+}
+.stream-detail-comment-avatar {
+    border-radius: 50%;
+    background-size: cover;
+
+  }
+  .comment-name {
+      font-weight: bold;
+  }
+.stream-detail-text-content {
+    text-align: justify;
+    white-space: pre-line;
+}
+.stream-panel {
+    max-width: 548px;
+
+}
+.stream-accordion {
+    margin-bottom: 16px;
+}
+
+.example-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .example-full-width {
+    width: 100%;
+  }

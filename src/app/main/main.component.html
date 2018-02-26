@@ -1,0 +1,53 @@
+<mat-sidenav-container class="example-container" *ngIf="afAuth.authState | async as user">
+  <mat-sidenav #sidenav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="mobileQuery.matches ? 'false' : 'true'" class="example-sidenav"
+    fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0">
+    <mat-list role="list">
+      <mat-list-item class="my-list-item" [class.my-list-item-mobile]="mobileQuery.matches" role="listitem">
+        <img id="img" class="sidenav-avatar" height="30" width="30" [src]="user.photoURL">
+        <span class="mat-body-2"> {{ user.displayName }} </span>
+
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+    <mat-nav-list role="navigation">
+      <a mat-list-item class="my-list-item-link" routerLink="/main/posts" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
+        <mat-icon matListIcon class="nav-mat-icon">dashboard</mat-icon>
+        <span class="mat-body-2 leftbar-link"> Stream </span>
+      </a>
+      <a mat-list-item class="my-list-item-link" routerLink="/main/profile" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
+        <mat-icon class="nav-mat-icon" matListIcon>person</mat-icon>
+        <span class="mat-body-2 leftbar-link"> Profil </span>
+      </a>
+      <a mat-list-item class="my-list-item-link" routerLink="/main/userlist" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
+        <mat-icon matListIcon class="nav-mat-icon">group</mat-icon>
+        <span class="mat-body-2 leftbar-link"> Freunde </span>
+      </a>
+      <a mat-list-item class="my-list-item-link" routerLink="/main/myposts" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
+        <mat-icon class="nav-mat-icon" matListIcon>list</mat-icon>
+        <span class="mat-body-2 leftbar-link"> Meine Posts </span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav #end position="end" mode="side" fixedInViewport="true" fixedTopGap="64">
+    lkjhlkj
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary" class="example-header mat-elevation-z2">
+      <button mat-icon-button (click)="sidenav.toggle(undefined, 'mouse')" *ngIf="!sidenav.opened">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="spacer"></span>
+
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="logout()">
+          Abmelden
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+    <span class="header-title mat-title" [class.header-title-mobile]="mobileQuery.matches">STREAM</span>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

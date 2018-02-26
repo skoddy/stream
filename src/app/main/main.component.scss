@@ -1,0 +1,79 @@
+.example-container {
+  position: fixed;
+  top: 60px;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+}
+.header-title {
+  top: 16px;
+  margin-left: 20px;
+  position: fixed;
+  z-index: 2;
+  color: white;
+}
+.header-title-mobile {
+  top: 12px;
+  margin-left: 76px;
+}
+.mat-drawer-backdrop.mat-drawer-shown {
+  background: none;
+}
+.mat-drawer {
+  overflow : visible !important;
+  overflow-x : visible !important;
+  overflow-y : visible !important;
+}
+.mat-drawer-container {
+  overflow : visible !important;
+  overflow-x : visible !important;
+  overflow-y : visible !important;
+}
+.example-sidenav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 240px;
+  border-right: 1px solid rgba(0,0,0,.14);
+
+}
+
+.example-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+
+}
+
+.leftbar-link {
+  margin-left: 0px;
+  padding-left: 34px;
+}
+.mat-list, .mat-nav-list, .mat-selection-list {
+  padding-top: 0 !important;
+}
+.my-list-item {
+  height: 64px !important;
+}
+.my-list-item-mobile {
+  height: 56px !important;
+}
+.my-list-item-link {
+  height: 64px !important;
+}
+.sidenav-avatar {
+  border-radius: 50%;
+  background-size: cover;
+  margin-right: 16px;
+}
+.mat-nav-list a.active {
+  background: rgba(0,0,0,.04);
+}
+.nav-mat-icon {
+  color: rgba(0, 0, 0, 0.54);
+}
+.spacer {
+  flex: 1 1 auto;
+}
