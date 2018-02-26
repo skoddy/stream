@@ -5,7 +5,7 @@
 /dist-server
 /tmp
 /out-tsc
-/src/*.spec.ts
+/src/*.spec.*
 # dependencies
 /node_modules
 
