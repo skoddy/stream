@@ -5,12 +5,20 @@ import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { tap, map } from 'rxjs/operators';
 export interface Posts {
-  id?: string;
-  content?: string;
+  id: string;
+  uid: string;
+  createdAt: string;
+  displayName: string;
   photoURL: string;
+  content: string;
+  category: string;
+}
+export interface NewPost {
   uid: string;
   displayName: string;
-  updatedAt: string;
+  photoURL: string;
+  content: string;
+  category: string;
 }
 @Component({
   selector: 'app-post-list',
@@ -19,36 +27,41 @@ export interface Posts {
 })
 export class PostListComponent implements OnInit {
   posts$: Observable<Posts[]>;
+  fooPosts$: Observable<Posts[]>;
+  barPosts$: Observable<Posts[]>;
   content: string;
   category: string;
-  showSpinner = true;
   constructor(private db: FirebaseService, private auth: AuthService) {
-    const fooPosts = this.db.colWithIds$(`users/njcHiz8vz4fI5qVtIRgKGdKqxWF2/posts`, ref => ref.orderBy('createdAt', 'desc'));
-    const barPosts = this.db.colWithIds$(`users/pwckgADVLXXI84yL72ml4S7kQcV2/posts`, ref => ref.orderBy('createdAt', 'desc'));
+    // Query multiple collections with realtime listener
+    this.fooPosts$ = this.db.colWithIds$(`users/njcHiz8vz4fI5qVtIRgKGdKqxWF2/posts`,
+      ref => ref.orderBy('createdAt', 'desc'));
+    this.barPosts$ = this.db.colWithIds$(`users/pwckgADVLXXI84yL72ml4S7kQcV2/posts`,
+      ref => ref.orderBy('createdAt', 'desc'));
+  }
 
-    this.posts$ = combineLatest<any[]>(fooPosts, barPosts).pipe(
+  ngOnInit() {
+    // Combine
+    this.posts$ = combineLatest<any[]>(this.fooPosts$, this.barPosts$).pipe(
       map(arr => arr.reduce((acc, cur) => acc.concat(cur))),
+      // Sort
       map(items => items.sort(this.sortByCreatedAt))
     );
-
   }
-  sortByCreatedAt(a, b) {
+
+  private sortByCreatedAt(a, b) {
     if (a.createdAt < b.createdAt) { return 1; }
     if (a.createdAt > b.createdAt) { return -1; }
     return 0;
   }
-  ngOnInit() {
-    // this.posts$ = this.db.colWithIds$(`users/${this.auth.currentUserId}/posts`, ref => ref.orderBy('createdAt', 'desc'));
-  }
-  createPost() {
-    this.db.add(`users/${this.auth.currentUserId}/posts`, {
-      content: this.content,
-      category: this.category,
-      displayName: this.auth.currentUserDisplayName,
-      uid: this.auth.currentUserId,
-      photoURL: this.auth.currentUserPhoto
-    });
 
+  private createPost() {
+    this.db.add<NewPost>(`users/${this.auth.currentUserId}/posts`, {
+      uid: this.auth.currentUserId,
+      displayName: this.auth.currentUserDisplayName,
+      photoURL: this.auth.currentUserPhoto,
+      content: this.content,
+      category: this.category
+    });
     this.content = undefined;
     this.category = undefined;
   }
