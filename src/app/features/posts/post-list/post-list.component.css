@@ -14,9 +14,7 @@
     max-width: 500px;
     margin-bottom: 16px;
 }
-.stream-list { 
-    padding: 16px;
-}
+
 #add {
     position: fixed;
     display: block;

@@ -31,7 +31,7 @@
   <mat-sidenav #end position="end" mode="side" fixedInViewport="true" fixedTopGap="64">
     lkjhlkj
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content class="sidenav-content" [class.sidenav-content-mobile]="mobileQuery.matches">
     <mat-toolbar color="primary" class="example-header mat-elevation-z2">
       <button mat-icon-button (click)="sidenav.toggle(undefined, 'mouse')" *ngIf="!sidenav.opened">
         <mat-icon>menu</mat-icon>

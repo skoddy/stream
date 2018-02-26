@@ -19,6 +19,12 @@
 .mat-drawer-backdrop.mat-drawer-shown {
   background: none;
 }
+.sidenav-content {
+  padding: 16px;
+}
+.sidenav-content-mobile {
+  padding: 0px;
+}
 .mat-drawer {
   overflow : visible !important;
   overflow-x : visible !important;
