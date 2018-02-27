@@ -8,12 +8,11 @@ import { UserListComponent } from './features/user/user-list/user-list.component
 import { AuthGuard } from '@app/core';
 import { ProfileComponent } from '@app/features/profile/profile.component';
 const routes: Routes = [
-  { path: '', redirectTo: '/main/posts', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   {
-    path: 'main', component: MainComponent, canActivate: [AuthGuard],
+    path: '', component: MainComponent, canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: '/main/posts', pathMatch: 'full' },
+      { path: '', component: PostListComponent },
       { path: 'posts', component: PostListComponent },
       { path: 'userlist', component: UserListComponent },
       { path: 'profile', component: ProfileComponent }
