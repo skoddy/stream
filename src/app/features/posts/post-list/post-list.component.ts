@@ -35,14 +35,10 @@ export class PostListComponent implements OnInit {
   category: string;
   constructor(private db: FirebaseService, private auth: AuthService) {
     // Query multiple collections with realtime listener
-    this.fooPosts$[0] = this.db.colWithIds$(`users/njcHiz8vz4fI5qVtIRgKGdKqxWF2/posts`,
+    this.barPosts$ = this.db.colWithIds$(`users/njcHiz8vz4fI5qVtIRgKGdKqxWF2/posts`,
       ref => ref.orderBy('createdAt', 'desc'));
-    this.fooPosts$[1] = this.db.colWithIds$(`users/pwckgADVLXXI84yL72ml4S7kQcV2/posts`,
+    this.fooPosts$ = this.db.colWithIds$(`users/pwckgADVLXXI84yL72ml4S7kQcV2/posts`,
       ref => ref.orderBy('createdAt', 'desc'));
-
-    const h = interval(100).pipe(take(2), map(i => [this.fooPosts$][i]));
-
-    h.pipe(mergeAll()).subscribe(val => console.log('merged'));
   }
 
   ngOnInit() {
