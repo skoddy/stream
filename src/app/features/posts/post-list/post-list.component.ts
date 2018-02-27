@@ -4,6 +4,8 @@ import { AuthService } from '@app/core';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { tap, map } from 'rxjs/operators';
+import { mergeAll, take } from 'rxjs/operators';
+import { interval } from 'rxjs/observable/interval';
 export interface Posts {
   id: string;
   uid: string;
@@ -33,10 +35,14 @@ export class PostListComponent implements OnInit {
   category: string;
   constructor(private db: FirebaseService, private auth: AuthService) {
     // Query multiple collections with realtime listener
-    this.fooPosts$ = this.db.colWithIds$(`users/njcHiz8vz4fI5qVtIRgKGdKqxWF2/posts`,
+    this.fooPosts$[0] = this.db.colWithIds$(`users/njcHiz8vz4fI5qVtIRgKGdKqxWF2/posts`,
       ref => ref.orderBy('createdAt', 'desc'));
-    this.barPosts$ = this.db.colWithIds$(`users/pwckgADVLXXI84yL72ml4S7kQcV2/posts`,
+    this.fooPosts$[1] = this.db.colWithIds$(`users/pwckgADVLXXI84yL72ml4S7kQcV2/posts`,
       ref => ref.orderBy('createdAt', 'desc'));
+
+    const h = interval(100).pipe(take(2), map(i => [this.fooPosts$][i]));
+
+    h.pipe(mergeAll()).subscribe(val => console.log('merged'));
   }
 
   ngOnInit() {
