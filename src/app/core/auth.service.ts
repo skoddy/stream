@@ -235,6 +235,8 @@ export class AuthService {
       displayName: user.displayName || 'nameless user',
       photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
     };
+
+    this.db.upsert(`users/${user.uid}/subscriptions/${user.uid}`, {'uid': user.uid});
     return this.db.upsert(`users/${user.uid}`, data);
   }
 }

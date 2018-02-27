@@ -3,14 +3,9 @@ import { FirebaseService } from '@app/core';
 import { AuthService } from '@app/core';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
-import { tap, map } from 'rxjs/operators';
-import { mergeAll, take } from 'rxjs/operators';
-import { interval } from 'rxjs/observable/interval';
-import { mergeMap } from 'rxjs/operators';
-import { forkJoin } from 'rxjs/observable/forkJoin';
-import { of } from 'rxjs/observable/of';
-export interface Posts {
-  id: string;
+import { map } from 'rxjs/operators/map';
+
+export interface Post {
   uid: string;
   createdAt: string;
   displayName: string;
@@ -25,48 +20,43 @@ export interface NewPost {
   content: string;
   category: string;
 }
-export interface User {
-  uid: string;
-  displayName: string;
-  photoURL: string;
-  content: string;
-  category: string;
-}
+
 @Component({
   selector: 'app-post-list',
   templateUrl: './post-list.component.html',
   styleUrls: ['./post-list.component.css']
 })
 export class PostListComponent implements OnInit {
-  posts$: Observable<Posts[]>;
-  observablesArray: Array<any>;
+  /* Query multiple collections with realtime listener */
+  posts$: Observable<Post[]>;
+  subscriptions$: Observable<Post>;
+  observablesArray: Array<Observable<Post>>;
   content: string;
   category: string;
-  subscriptions$: Observable<any>;
-  subscribedTo: any;
+
   constructor(private db: FirebaseService, private auth: AuthService) {
-    // Query multiple collections with realtime listener
     this.observablesArray = new Array();
+    // Query the collection in which the current user saved his subscriptions
     this.subscriptions$ = db.col$(`users/${this.auth.currentUserId}/subscriptions`);
   }
 
   ngOnInit() {
-    // Combine
     this.subscriptions$.subscribe((data) => {
       for (const key in data) {
         if (data.hasOwnProperty(key)) {
           const element = data[key];
+          // Query the documents of the subscribed user and save them in an array
           this.observablesArray[key] = this.db.colWithIds$(`users/${element.uid}/posts`,
-            ref => ref.orderBy('createdAt', 'desc'));
+          ref => ref.orderBy('createdAt', 'desc'));
         }
       }
+      // Combine the arrays
       this.posts$ = combineLatest<any[]>(...this.observablesArray).pipe(
         map(arr => arr.reduce((acc, cur) => acc.concat(cur))),
-        // Sort
+        // Sort by date created
         map(items => items.sort(this.sortByCreatedAt))
       );
     });
-
   }
 
   private sortByCreatedAt(a, b) {
