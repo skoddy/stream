@@ -65,7 +65,7 @@ export class PostListComponent implements OnInit {
     return 0;
   }
 
-  private createPost() {
+  public createPost() {
     this.db.add<NewPost>(`users/${this.auth.currentUserId}/posts`, {
       uid: this.auth.currentUserId,
       displayName: this.auth.currentUserDisplayName,
