@@ -38,9 +38,6 @@ export class PostListComponent implements OnInit {
     this.arrayOfSubscribedUsers = new Array();
     // Query the collection in which the current user saved his subscriptions
     this.subscriptions$ = db.col$(`users/${this.auth.currentUserId}/subscriptions`);
-  }
-
-  ngOnInit() {
     this.subscriptions$.subscribe((data) => {
       for (const key in data) {
         if (data.hasOwnProperty(key)) {
@@ -64,6 +61,10 @@ export class PostListComponent implements OnInit {
         map(items => items.sort(this.sortByCreatedAt))
       );
     });
+  }
+
+  ngOnInit() {
+
   }
 
   private sortByCreatedAt(a, b) {
