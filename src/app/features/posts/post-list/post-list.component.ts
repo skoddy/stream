@@ -46,12 +46,19 @@ export class PostListComponent implements OnInit {
         if (data.hasOwnProperty(key)) {
           const element = data[key];
           // Query the documents of the subscribed user and save them in an array
-          this.observablesArray[key] = this.db.colWithIds$(`users/${element.uid}/posts`,
-          ref => ref.orderBy('createdAt', 'desc'));
+          this.observablesArray[key] = this.db.colWithIds$(`users/${element.uid}/posts`);
         }
       }
-      // Combine the arrays
+      // Combine the arrays with combineLatest
+      // As soon as all streams have emitted at least one value
+      // each new emission produces a combined value through the result stream
       this.posts$ = combineLatest<any[]>(...this.observablesArray).pipe(
+        // reduce() the values from the source observable
+        //
+        // concat() (verketten) streams by subscribing
+        // and emitting values from each input sequentially
+        // having ONE subscription at a time. i use concat because the
+        // order of emission is important
         map(arr => arr.reduce((acc, cur) => acc.concat(cur))),
         // Sort by date created
         map(items => items.sort(this.sortByCreatedAt))
