@@ -1,71 +1,96 @@
 <section id="page-splash">
-    <h1 class="mat-display-1 title italic">STREAM</h1>
-    <mat-accordion class="login-headers-align">
-      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Anmelden
-          </mat-panel-title>
-          <mat-panel-description>
-            Type your name and age
-            <mat-icon>account_circle</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-    
-        <div class="login-container">
-          <mat-form-field>
-            <input matInput placeholder="Enter your email" [formControl]="email" required>
-            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Passwort eingeben" [type]="hide ? 'password' : 'text'">
-            <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
-          </mat-form-field>
-        </div>  
-    
-        <mat-action-row>
-          <button mat-button color="primary">Anmelden</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    
-      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle="true">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Neues Konto
-          </mat-panel-title>
-          <mat-panel-description>
-            Type the country name
-            <mat-icon>map</mat-icon>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
-    
-        <div class="login-container">
-          <mat-form-field>
-            <input matInput placeholder="Enter your email" [formControl]="email" required>
-            <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Passwort eingeben" [type]="hide ? 'password' : 'text'">
-            <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput placeholder="Passwort wiederholen" [type]="hide ? 'password' : 'text'">
-            <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility' : 'visibility_off'}}</mat-icon>
-          </mat-form-field>
-        </div>  
-    
-        <mat-action-row>
-          <button mat-button color="primary">Konto erstellen</button>
-        </mat-action-row>
-      </mat-expansion-panel>
-    
+  <h1 class="mat-display-1 title italic">STREAM</h1>
 
-    
-    </mat-accordion>
-    
-    <div>
-      <button (click)="login()" mat-raised-button>
-        <mat-icon>account_circle</mat-icon> Sign in with Google</button>
-    </div>
-  </section>
+
+
+
+
+
+
+
+
+  <mat-accordion class="login-headers-align">
+    <mat-expansion-panel [expanded]="true" hideToggle="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Anmelden
+        </mat-panel-title>
+        <mat-panel-description>
+          <span class="spacer"></span>
+          <mat-icon>account_circle</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div class="login-container">
+        <mat-form-field>
+          <input [formControl]="lemail" matInput placeholder="Enter your email" required>
+          <mat-error *ngIf="lemail.invalid">{{getLEErrorMessage()}}</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input [formControl]="lpassword" matInput placeholder="Passwort eingeben" [type]="hidePassword ? 'password' : 'text'" required>
+          <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility' : 'visibility_off'}}</mat-icon>
+          <mat-error *ngIf="lpassword.invalid">{{getLPErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <mat-action-row>
+        <button [disabled]="!lpassword.valid || !lemail.valid" mat-button color="primary">Anmelden</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel hideToggle="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Registrieren
+        </mat-panel-title>
+        <mat-panel-description>
+          <span class="spacer"></span>
+          <mat-icon>person_add</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
   
+        <div class="login-container">
+
+          <mat-form-field>
+            <input [formControl]="semail" matInput placeholder="Enter your email" required>
+            <mat-error *ngIf="semail.invalid">{{getSEErrorMessage()}}</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input [formControl]="spassword" matInput placeholder="Passwort eingeben" type="password" required>
+            <mat-error *ngIf="spassword.invalid">{{getSPErrorMessage()}}</mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <input [formControl]="spasswordcheck" matInput placeholder="Passwort wiederholen" type="password" required>
+            <mat-error *ngIf="spasswordcheck.invalid">{{getSPCErrorMessage()}}</mat-error>
+          </mat-form-field>
+        </div>
+        <mat-action-row>
+          <button [disabled]="!spassword.valid || !semail.valid || !spasswordcheck.valid" mat-button (click)="signup()" color="primary">Konto erstellen</button>
+        </mat-action-row>
+
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Provider
+        </mat-panel-title>
+        <mat-panel-description>
+          <span class="spacer"></span>
+          <mat-icon>cloud_circle</mat-icon>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <div>
+        <button (click)="loginWithGoogle()" mat-raised-button>
+          <mat-icon>account_circle</mat-icon> Sign in with Google</button>
+      </div>
+
+
+
+    </mat-expansion-panel>
+
+
+  </mat-accordion>
+
+
+</section>

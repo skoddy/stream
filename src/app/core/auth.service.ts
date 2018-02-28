@@ -227,9 +227,9 @@ export class AuthService {
   }
 
   // Sets user data to firestore after succesful login
-  private upsertUserData(user: User) {
+  public upsertUserData(user: User, data?: any) {
 
-    const data: User = {
+    const newUser: User = {
       uid: user.uid,
       email: user.email || null,
       displayName: user.displayName || 'nameless user',
@@ -237,6 +237,6 @@ export class AuthService {
     };
 
     this.db.upsert(`users/${user.uid}/subscriptions/${user.uid}`, {'uid': user.uid});
-    return this.db.upsert(`users/${user.uid}`, data);
+    return this.db.upsert(`users/${user.uid}`, newUser);
   }
 }
