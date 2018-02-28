@@ -1,26 +1,35 @@
 <div class="stream-list">
-    <mat-card class="stream-list-card">
-        <mat-form-field class="stream-list-select-cat">
-          <mat-select [(ngModel)]="category" placeholder="Kategorie">
-            <mat-option value="option1">Programmierung</mat-option>
-            <mat-option value="option2">Netzwerke</mat-option>
-            <mat-option value="option3">Prüfung</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="stream-list-create-textfield">
-          <mat-card-content>
-            <textarea #msg [(ngModel)]="content" matInput placeholder="Was gibt's neues?" matTextareaAutosize matAutosizeMinRows="5" matAutosizeMaxRows="50"></textarea>
-            <mat-hint align="end">{{msg.value.length}} / 500</mat-hint>
-          </mat-card-content>
-        </mat-form-field>
-        <mat-card-actions>
-          <button color="primary" [disabled]="content?.length < 2 || content?.length > 500 || !category" mat-raised-button (click)="createPost()">STREAM!</button>
-        </mat-card-actions>
-      </mat-card>
-<div *ngIf="posts$ | async; let posts; else loading">
+  <mat-card class="stream-list-card">
+    <mat-form-field class="stream-list-select-cat">
+      <mat-select [(ngModel)]="category" placeholder="Kategorie">
+        <mat-option value="option1">Programmierung</mat-option>
+        <mat-option value="option2">Netzwerke</mat-option>
+        <mat-option value="option3">Prüfung</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="stream-list-create-textfield">
+      <mat-card-content>
+        <textarea #msg [(ngModel)]="content" matInput placeholder="Was gibt's neues?" matTextareaAutosize matAutosizeMinRows="5"
+          matAutosizeMaxRows="50"></textarea>
+        <mat-hint align="end">{{msg.value.length}} / 500</mat-hint>
+      </mat-card-content>
+    </mat-form-field>
+    <mat-card-actions>
+      <button color="primary" [disabled]="content?.length < 2 || content?.length > 500 || !category" mat-raised-button (click)="createPost()">STREAM!</button>
+    </mat-card-actions>
+  </mat-card>
+  <div *ngIf="posts$ | async; let posts; else loading">
     <div *ngFor="let post of posts">
       <app-post-detail [post]="post"></app-post-detail>
     </div>
-</div>
-<ng-template #loading><div class="spinner"></div></ng-template>
   </div>
+  <ng-template #loading>
+    <div class="spinner">
+      <div class="rect1"></div>
+      <div class="rect2"></div>
+      <div class="rect3"></div>
+      <div class="rect4"></div>
+      <div class="rect5"></div>
+    </div>
+  </ng-template>
+</div>

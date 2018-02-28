@@ -1,4 +1,4 @@
-<mat-sidenav-container class="example-container" *ngIf="afAuth.authState | async as user; else loading">
+<mat-sidenav-container class="example-container" *ngIf="afAuth.authState | async as user;">
   <mat-sidenav #sidenav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="mobileQuery.matches ? 'false' : 'true'" class="example-sidenav"
     fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0">
     <mat-list role="list">
@@ -51,12 +51,3 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
-<ng-template #loading>
-  <div class="spinner">
-    <div class="rect1"></div>
-    <div class="rect2"></div>
-    <div class="rect3"></div>
-    <div class="rect4"></div>
-    <div class="rect5"></div>
-  </div>
-</ng-template>
