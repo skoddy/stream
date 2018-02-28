@@ -36,25 +36,25 @@ export class LoginComponent implements OnInit {
 
   }
   getSNErrorMessage() {
-    return this.sname.hasError('required') ? 'You must enter a value' : '';
+    return this.sname.hasError('required') ? 'Name wird benötigt.' : '';
   }
   getSEErrorMessage() {
-    return this.semail.hasError('required') ? 'You must enter a value' : '';
+    return this.semail.hasError('required') ? 'E-Mail wird benötigt.' : '';
   }
 
   getSPErrorMessage() {
-    return this.spassword.hasError('required') ? 'You must enter a value' : '';
+    return this.spassword.hasError('required') ? 'Passwortwird benötigt.' : '';
   }
 
   getSPCErrorMessage() {
-    return this.spasswordcheck.hasError('required') ? 'You must enter a value' : '';
+    return this.spasswordcheck.hasError('required') ? 'Passwort wird benötigt.' : '';
   }
   getLEErrorMessage() {
-    return this.lemail.hasError('required') ? 'You must enter a value' : '';
+    return this.lemail.hasError('required') ? 'E-Mail wird benötigt.' : '';
   }
 
   getLPErrorMessage() {
-    return this.lpassword.hasError('required') ? 'You must enter a value' : '';
+    return this.lpassword.hasError('required') ? 'Passwort wird benötigt.' : '';
   }
   loginWithGoogle() {
     this.auth.googleLogin().then(() => {

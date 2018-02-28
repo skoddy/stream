@@ -23,7 +23,7 @@
 
       <div class="login-container">
         <mat-form-field>
-          <input [formControl]="lemail" matInput placeholder="Enter your email" required>
+          <input [formControl]="lemail" matInput placeholder="E-Mail Adresse" required>
           <mat-error *ngIf="lemail.invalid">{{getLEErrorMessage()}}</mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -56,7 +56,7 @@
                 <mat-error *ngIf="sname.invalid">{{getSNErrorMessage()}}</mat-error>
               </mat-form-field>
           <mat-form-field>
-            <input [formControl]="semail" matInput placeholder="Enter your email" required>
+            <input [formControl]="semail" matInput placeholder="E-Mail Adresse" required>
             <mat-error *ngIf="semail.invalid">{{getSEErrorMessage()}}</mat-error>
           </mat-form-field>
           <mat-form-field>
@@ -85,7 +85,7 @@
       </mat-expansion-panel-header>
       <div>
         <button (click)="loginWithGoogle()" mat-raised-button>
-          <mat-icon>account_circle</mat-icon> Sign in with Google</button>
+          <mat-icon>account_circle</mat-icon> Mit Google anmelden</button>
       </div>
 
 
