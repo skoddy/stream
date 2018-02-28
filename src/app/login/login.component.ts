@@ -17,11 +17,11 @@ export class LoginComponent implements OnInit {
   lemail = new FormControl('', [Validators.required]);
   lpassword = new FormControl('', [Validators.required]);
 
-
+  sname = new FormControl('', [Validators.required]);
   semail = new FormControl('', [Validators.required]);
   spassword = new FormControl('', [Validators.required]);
   spasswordcheck = new FormControl('', [Validators.required]);
-  sname: string;
+  step = 'open';
 
   authError = 'errorrr';
   hidePassword = true;
@@ -35,7 +35,9 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
 
   }
-
+  getSNErrorMessage() {
+    return this.sname.hasError('required') ? 'You must enter a value' : '';
+  }
   getSEErrorMessage() {
     return this.semail.hasError('required') ? 'You must enter a value' : '';
   }
@@ -67,20 +69,29 @@ export class LoginComponent implements OnInit {
     }
     return this.afAuth.auth.createUserWithEmailAndPassword(this.semail.value, this.spassword.value)
       .then((user) => {
-        this.toast.sendMsg('Welcome to STREAM!!!');
-        return this.auth.upsertUserData(user);
+        this.toast.sendMsg('Konto erstellt. Sie können sich anmelden.');
+        this.step = 'signed';
+        this.auth.upsertUserData(user, { displayName: this.sname.value });
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        this.authError = errorMessage;
-        this.toast.sendMsg(errorMessage);
+        this.handleError(error);
       });
   }
-
+  emailLogin() {
+    return this.afAuth.auth.signInWithEmailAndPassword(this.lemail.value, this.lpassword.value)
+      .then((user) => {
+        this.router.navigate(['/']);
+        this.auth.upsertUserData(user);
+      })
+      .catch((error) => this.handleError(error));
+  }
+  handleError(error: any) {
+    const errorCode = error.code;
+    this.toast.sendMsg(authErrorCodes[errorCode]);
+  }
   // Step 2
   setCatchPhrase(user) {
-    return this.auth.upsertUserData(user, { displayName: this.sname });
+    return this.auth.upsertUserData(user, { displayName: this.sname.value });
   }
   /*   loginWithEmail() {
       this.auth.emailLogin(this.email, this.password).then(() => {
@@ -90,5 +101,40 @@ export class LoginComponent implements OnInit {
   registerWithEmail() {
 
   }
-
 }
+const authErrorCodes = {
+  // link
+  'auth/provider-already-linked': 'auth/provider-already-linked',
+  'auth/invalid-credential': 'auth/invalid-credential',
+  'auth/credential-already-in-use': 'auth/credential-already-in-use',
+  'auth/email-already-in-use': 'Diese E-Mail ist schon registriert',
+  'auth/operation-not-allowed': 'auth/operation-not-allowed',
+  'auth/invalid-email': 'Ungültige E-Mail',
+  'auth/wrong-password': 'Falsches Password',
+  // linkWithPopup
+  'auth/auth-domain-config-required': 'auth/auth-domain-config-required',
+  'auth/cancelled-popup-request': 'auth/cancelled-popup-request',
+  'auth/popup-blocked': 'auth/popup-blocked',
+  'auth/operation-not-supported-in-this-environment': 'auth/operation-not-supported-in-this-environment',
+  'auth/popup-closed-by-user': 'auth/popup-closed-by-user',
+  'auth/unauthorized-domain': 'auth/unauthorized-domain',
+  // linkWithRedirect
+  // reauthenticate
+  'auth/user-mismatch': 'auth/user-mismatch',
+  'auth/user-not-found': 'auth/user-not-found',
+  // updateEmail
+  'auth/requires-recent-login': 'auth/requires-recent-login',
+  // updatePassword
+  'auth/weak-password': 'Passwort zu schwach: 6 bis 24 Zeichen',
+  // common errors
+  'auth/app-deleted': 'auth/app-deleted',
+  'auth/app-not-authorized': 'auth/app-not-authorized',
+  'auth/argument-error': 'auth/argument-error',
+  'auth/invalid-api-key': 'auth/invalid-api-key',
+  'auth/invalid-user-token': 'auth/invalid-user-token',
+  'auth/network-request-failed': 'auth/network-request-failed',
+  'auth/too-many-requests': 'auth/too-many-requests',
+  'auth/user-disabled': 'auth/user-disabled',
+  'auth/user-token-expired': 'auth/user-token-expired',
+  'auth/web-storage-unsupported': 'auth/web-storage-unsupported'
+};

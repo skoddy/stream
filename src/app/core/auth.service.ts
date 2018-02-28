@@ -232,7 +232,7 @@ export class AuthService {
     const newUser: User = {
       uid: user.uid,
       email: user.email || null,
-      displayName: user.displayName || 'nameless user',
+      displayName: user.displayName || data.displayName,
       photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
     };
 

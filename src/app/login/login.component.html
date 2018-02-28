@@ -10,7 +10,7 @@
 
 
   <mat-accordion class="login-headers-align">
-    <mat-expansion-panel [expanded]="true" hideToggle="true">
+    <mat-expansion-panel [expanded]="step == 'signed' || 'open'" hideToggle="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
           Anmelden
@@ -34,7 +34,7 @@
       </div>
 
       <mat-action-row>
-        <button [disabled]="!lpassword.valid || !lemail.valid" mat-button color="primary">Anmelden</button>
+        <button (click)="emailLogin()" [disabled]="!lpassword.valid || !lemail.valid" mat-button color="primary">Anmelden</button>
       </mat-action-row>
     </mat-expansion-panel>
 
@@ -51,7 +51,10 @@
 
   
         <div class="login-container">
-
+            <mat-form-field>
+                <input [formControl]="sname" matInput placeholder="Vor- und Nachname" required>
+                <mat-error *ngIf="sname.invalid">{{getSNErrorMessage()}}</mat-error>
+              </mat-form-field>
           <mat-form-field>
             <input [formControl]="semail" matInput placeholder="Enter your email" required>
             <mat-error *ngIf="semail.invalid">{{getSEErrorMessage()}}</mat-error>
