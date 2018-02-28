@@ -9,8 +9,8 @@ export class ToastService {
   constructor(public snackBar: MatSnackBar) { }
   sendMsg(content: string, action: string) {
     this.snackBar.open(content, action, {
-      duration: 2000,
-      horizontalPosition: 'right',
+      duration: 3000,
+      horizontalPosition: 'left',
     });
   }
 }
