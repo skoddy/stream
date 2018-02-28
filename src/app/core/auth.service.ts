@@ -174,8 +174,8 @@ export class AuthService {
   anonymousLogin() {
     return this.afAuth.auth.signInAnonymously()
       .then((user) => {
-        // this.toast.update('Welcome to Firestarter!!!', 'success');
-        return this.upsertUserData(user); // if using firestore
+        // this.toast.update('Welcome to STREAM!!!', 'success');
+        return this.upsertUserData(user);
       })
       .catch((error) => {
         console.error(error.code);
@@ -188,8 +188,8 @@ export class AuthService {
   emailSignUp(email: string, password: string) {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then((user) => {
-        // this.toast.update('Welcome to Firestarter!!!', 'success');
-        return this.upsertUserData(user); // if using firestore
+        // this.toast.update('Welcome to STREAM!!!', 'success');
+        return this.upsertUserData(user);
       })
       .catch((error) => this.handleError(error));
   }
@@ -197,8 +197,8 @@ export class AuthService {
   emailLogin(email: string, password: string) {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password)
       .then((user) => {
-        // this.toast.update('Welcome to Firestarter!!!', 'success')
-        return this.upsertUserData(user); // if using firestore
+        // this.toast.update('Welcome to STREAM!!!', 'success')
+        return this.upsertUserData(user);
       })
       .catch((error) => this.handleError(error));
   }
