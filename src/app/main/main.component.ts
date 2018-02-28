@@ -25,7 +25,7 @@ export class MainComponent implements OnInit {
 
   constructor(
     public afAuth: AngularFireAuth,
-    public authService: AuthService,
+    public auth: AuthService,
     private db: FirebaseService,
     changeDetectorRef: ChangeDetectorRef,
     media: MediaMatcher) {
@@ -37,28 +37,11 @@ export class MainComponent implements OnInit {
       }
     };
     this.mobileQuery.addListener(this._mobileQueryListener);
-/*     db.inspectCol('users');
-    db.inspectCol('posts');
-    db.inspectDoc('users/njcHiz8vz4fI5qVtIRgKGdKqxWF2');
-
-    this.item = db.doc$('users/njcHiz8vz4fI5qVtIRgKGdKqxWF2');
-    this.itemlist = db.col$('posts');
-    this.itemidlist = db.colWithIds$('posts');
-
-    this.itemDocb = db.doc$('items/33X6TTp6FzkEE7FgfEkw');
-    const itemDoc = db.doc('items/33X6TTp6FzkEE7FgfEkw');
-    const userDoc = db.doc('users/njcHiz8vz4fI5qVtIRgKGdKqxWF2');
-    this.db.update(itemDoc, { user: userDoc.ref });
-
-    this.user = db.doc$('items/33X6TTp6FzkEE7FgfEkw').switchMap(doc => {
-      return this.db.doc$(doc.user.path);
-    });
-    // create post with user reference
-    const userDoc2 = db.doc('users/njcHiz8vz4fI5qVtIRgKGdKqxWF2');
-    // db.add('posts', { content: 'asd', user: userDoc2.ref }); */
   }
+  get displayName() { return this.auth.currentUserDisplayName; }
+  get photoURL() { return this.auth.currentUserPhoto; }
   logout() {
-    this.authService.signOut();
+    this.auth.signOut();
   }
   OnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);

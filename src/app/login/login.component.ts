@@ -70,8 +70,14 @@ export class LoginComponent implements OnInit {
     return this.afAuth.auth.createUserWithEmailAndPassword(this.semail.value, this.spassword.value)
       .then((user) => {
         this.toast.sendMsg('Konto erstellt. Sie können sich anmelden.');
-        this.step = 'signed';
+
         this.auth.upsertUserData(user, { displayName: this.sname.value });
+        this.step = 'signed';
+        this.lemail.reset(this.semail.value);
+        this.sname.reset('');
+        this.semail.reset('');
+        this.spassword.reset('');
+        this.spasswordcheck.reset('');
       })
       .catch((error) => {
         this.handleError(error);

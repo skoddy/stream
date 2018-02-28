@@ -3,8 +3,8 @@
     fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0">
     <mat-list role="list">
       <mat-list-item class="my-list-item" [class.my-list-item-mobile]="mobileQuery.matches" role="listitem">
-        <img id="img" class="sidenav-avatar" height="30" width="30" [src]="user.photoURL">
-        <span class="mat-body-2"> {{ user.displayName }} </span>
+        <div mat-card-avatar class="sidenav-avatar" [ngStyle]="{'background-image': 'url(' + photoURL + ')'}"></div>
+        <span class="mat-body-2"> {{ displayName }} </span>
 
       </mat-list-item>
       <mat-divider></mat-divider>
