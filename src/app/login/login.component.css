@@ -13,7 +13,30 @@
     
     flex-direction: column;
   }
+  .spacer {
+    flex: 1 1 auto;
+}
 .title {
-  font-style: italic;
   color: white;
+}
+.italic {
+  font-style: italic;
+}
+.login-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-container > * {
+  width: 100%;
+}
+
+.login-headers-align .mat-expansion-panel-header-title, 
+.login-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.login-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
 }
