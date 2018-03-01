@@ -22,7 +22,12 @@ export class UserListComponent implements OnInit {
 
 
   }
-/*   getEpic(id: number): Observable<Epic> {
+/*   getEpics():Observable<Epic[]> {
+    return this.http.get(this.url + "getEpics")
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+  getEpic(id: number): Observable<Epic> {
     return this.getEpics()
       .map(epics => epics.filter(epic => epic.id !== id)[0]);
   } */
