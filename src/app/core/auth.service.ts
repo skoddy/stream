@@ -9,12 +9,7 @@ import { Observable } from 'rxjs/Observable';
 import { switchMap } from 'rxjs/operators';
 
 import { ToastService } from './toast.service';
-// presence
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database-deprecated';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/timer';
-import 'rxjs/add/operator/throttleTime';
-import 'rxjs/add/observable/fromEvent';
+
 interface User {
   uid: string;
   email?: string | null;
@@ -24,16 +19,14 @@ interface User {
 
 @Injectable()
 export class AuthService {
-  mouseEvents: Subscription;
-  timer: Subscription;
+
   userId: string; // current user uid
   public user: Observable<User | null>;
   private userDetails: User = null;
   constructor(private afAuth: AngularFireAuth,
     private db: FirebaseService,
     public router: Router,
-    private toast: ToastService,
-    private rtdb: AngularFireDatabase) {
+    private toast: ToastService) {
 
     /*  The constructor will set the Observable.
         First it receives the current Firebase auth state.
@@ -53,9 +46,6 @@ export class AuthService {
       (user) => {
         if (user) {
           this.userId = user.uid;
-          this.updateOnConnect();
-          this.updateOnDisconnect();
-          this.updateOnIdle();
           this.userDetails = user;
           console.log(this.userDetails);
         } else {
@@ -74,67 +64,16 @@ export class AuthService {
     }
   }
   // Returns current user UID
-  get currentUserId(): string {
+  get uid(): string {
     return this.authenticated ? this.userDetails.uid : '';
   }
   // Returns current user display name or Guest
-  get currentUserDisplayName(): string {
+  get displayName(): string {
     return this.userDetails.displayName || this.userDetails.email;
   }
   // Returns current user photo
-  get currentUserPhoto(): string {
+  get photoURL(): string {
     return this.userDetails.photoURL || '';
-  }
-
-  getUsers() {
-    return this.rtdb.list('/users');
-  }
-  /// Listen for mouse events to update status
-  private updateOnIdle() {
-
-    this.mouseEvents = Observable
-      .fromEvent(document, 'mousemove')
-      .throttleTime(2000)
-      .do(() => {
-        this.updateStatus('online');
-        this.resetTimer();
-      })
-      .subscribe();
-  }
-
-  /// Reset the timer
-  private resetTimer() {
-    if (this.timer) { this.timer.unsubscribe(); }
-
-    this.timer = Observable.timer(5000)
-      .do(() => {
-        this.updateStatus('away');
-      })
-      .subscribe();
-  }
-
-  /// Updates status when connection to Firebase ends
-  private updateOnDisconnect() {
-    firebase.database().ref().child(`users/${this.userId}`)
-      .onDisconnect()
-      .update({ status: 'offline' });
-  }
-  /// Helper to perform the update in Firebase
-  private updateStatus(status: string) {
-    if (!this.userId) { return; }
-
-    this.rtdb.object(`users/` + this.userId).update({ status: status, name: this.currentUserDisplayName });
-  }
-
-
-  /// Updates status when connection to Firebase starts
-  private updateOnConnect() {
-    return this.rtdb.object('.info/connected')
-      .do(connected => {
-        const status = connected.$value ? 'online' : 'offline';
-        this.updateStatus(status);
-      })
-      .subscribe();
   }
 
   ////// OAuth Methods /////
@@ -213,9 +152,7 @@ export class AuthService {
   }
 
   signOut() {
-    this.updateStatus('offline');
-    this.mouseEvents.unsubscribe();
-    this.timer.unsubscribe();
+
 
     this.afAuth.auth.signOut();
   }

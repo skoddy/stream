@@ -38,8 +38,8 @@ export class MainComponent implements OnInit {
     };
     this.mobileQuery.addListener(this._mobileQueryListener);
   }
-  get displayName() { return this.auth.currentUserDisplayName; }
-  get photoURL() { return this.auth.currentUserPhoto; }
+  get displayName() { return this.auth.displayName; }
+  get photoURL() { return this.auth.photoURL; }
   logout() {
     this.auth.signOut();
   }

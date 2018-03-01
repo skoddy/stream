@@ -10,7 +10,7 @@ export class PostMenuComponent {
   @Input() uid: string;
   currentUid: string;
   constructor(private auth: AuthService, private db: FirebaseService, private toast: ToastService) {
-    this.currentUid = auth.currentUserId;
+    this.currentUid = auth.uid;
   }
 
   deletePost(id: string) {

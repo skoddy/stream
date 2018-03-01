@@ -37,7 +37,7 @@ export class PostListComponent implements OnInit {
   constructor(private db: FirebaseService, private auth: AuthService) {
     this.arrayOfSubscribedUsers = new Array();
     // Query the collection in which the current user saved his subscriptions
-    this.subscriptions$ = db.col$(`users/${this.auth.currentUserId}/subscriptions`);
+    this.subscriptions$ = db.col$(`users/${this.auth.uid}/subscriptions`);
     this.subscriptions$.subscribe((data) => {
       for (const key in data) {
         if (data.hasOwnProperty(key)) {
@@ -74,10 +74,10 @@ export class PostListComponent implements OnInit {
   }
 
   public createPost() {
-    this.db.add<NewPost>(`users/${this.auth.currentUserId}/posts`, {
-      uid: this.auth.currentUserId,
-      displayName: this.auth.currentUserDisplayName,
-      photoURL: this.auth.currentUserPhoto,
+    this.db.add<NewPost>(`users/${this.auth.uid}/posts`, {
+      uid: this.auth.uid,
+      displayName: this.auth.displayName,
+      photoURL: this.auth.photoURL,
       content: this.content,
       category: this.category
     });
