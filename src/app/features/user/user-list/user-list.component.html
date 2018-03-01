@@ -2,7 +2,10 @@
   <mat-card class="users-list-card">
     <mat-nav-list>
       <h3 mat-subheader>Personen</h3>
-      
+      <div *ngFor="let user of users | async">
+        {{user.displayName}}
+
+      </div>
 
     </mat-nav-list>
   </mat-card>
