@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-user-status',
@@ -6,7 +6,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./user-status.component.css']
 })
 export class UserStatusComponent implements OnInit {
-@Input() user;
+
   constructor() { }
 
   ngOnInit() {
