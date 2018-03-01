@@ -14,17 +14,17 @@
         <mat-icon matListIcon class="nav-mat-icon">dashboard</mat-icon>
         <span class="mat-body-2 leftbar-link"> Stream </span>
       </a>
-      <a mat-list-item class="my-list-item-link" routerLink="/profile" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
-        <mat-icon class="nav-mat-icon" matListIcon>person</mat-icon>
-        <span class="mat-body-2 leftbar-link"> Profil </span>
-      </a>
       <a mat-list-item class="my-list-item-link" routerLink="/userlist" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
         <mat-icon matListIcon class="nav-mat-icon">group</mat-icon>
-        <span class="mat-body-2 leftbar-link"> Freunde </span>
+        <span class="mat-body-2 leftbar-link"> Personen </span>
       </a>
       <a mat-list-item class="my-list-item-link" routerLink="/myposts" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
         <mat-icon class="nav-mat-icon" matListIcon>list</mat-icon>
         <span class="mat-body-2 leftbar-link"> Meine Posts </span>
+      </a>
+      <a mat-list-item class="my-list-item-link" routerLink="/chat" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
+        <mat-icon class="nav-mat-icon" matListIcon>chat_bubble</mat-icon>
+        <span class="mat-body-2 leftbar-link"> Chat </span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
@@ -42,6 +42,9 @@
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="/profile">
+              Profil
+            </button>
         <button mat-menu-item (click)="logout()">
           Abmelden
         </button>
