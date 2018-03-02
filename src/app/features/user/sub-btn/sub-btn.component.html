@@ -1,3 +1,6 @@
-<p>
-  sub-btn works!
-</p>
+<div *ngIf="hasSubscribed; then subscribed else notsubscribed"></div>
+
+<ng-template #subscribed>
+    <button (click)="unSubscribeUser(uid)" mat-mini-fab color="primary">-</button>
+</ng-template>
+<ng-template #notsubscribed><button (click)="subscribeUser(uid)" mat-mini-fab color="primary">+</button></ng-template>

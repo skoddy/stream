@@ -1,13 +1,46 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { FirebaseService } from '@app/core';
+import { AuthService } from '@app/core';
+import { Observable } from 'rxjs/Observable';
+
+export interface Subs {
+  uid: string;
+}
 
 @Component({
   selector: 'app-sub-btn',
   templateUrl: './sub-btn.component.html',
   styleUrls: ['./sub-btn.component.css']
 })
-export class SubBtnComponent {
+export class SubBtnComponent implements OnInit {
+
+  subsDoc$: Observable<any>;
+  sub: any;
+  hasSubscribed: boolean;
   @Input() uid: string;
-  constructor() { }
+  constructor(public db: FirebaseService, public auth: AuthService) {
+    /*     this.subsDoc$ = this.db.doc(`users/${this.auth.uid}/subscriptions/${this._uid}`);
+        this.sub = this.subsDoc$.valueChanges(); */
 
+  }
 
+  ngOnInit() {
+    this.subsDoc$ = this.db.doc$(`users/${this.auth.uid}/subscriptions/${this.uid}`);
+    this.sub = this.subsDoc$.subscribe((data) => {
+      this.hasSubscribed = false;
+      if (data && (data.uid === this.uid)) {
+        this.hasSubscribed = true;
+        console.log(`${data.uid} und ${this.uid}`);
+      }
+    });
+
+  }
+  unSubscribeUser(uid: string) {
+    console.log(`unsubbed user ${uid}`);
+    this.db.delete(`users/${this.auth.uid}/subscriptions/${uid}`);
+  }
+  subscribeUser(uid: string) {
+    console.log(`subbed user ${uid}`);
+    this.db.set(`users/${this.auth.uid}/subscriptions/${uid}`, { uid: uid });
+  }
 }

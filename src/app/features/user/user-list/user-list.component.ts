@@ -35,7 +35,7 @@ export class UserListComponent implements OnInit {
   public userDatabase = new UserDatabase(this);
   displayedColumns = [
     'displayName',
-    'email'
+    'uid'
   ];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   public dataLength: any;
