@@ -15,7 +15,9 @@ import 'rxjs/add/operator/map';
 export class UserService {
   usersRef$: Observable<User[]>;
 
-  constructor(public db: FirebaseService, public auth: AuthService,  @Inject(FirebaseApp) fb) {
+  constructor(public db: FirebaseService,
+    public auth: AuthService,
+    @Inject(FirebaseApp) fb) {
     // Fill up the database with 100 users.
     this.usersRef$ = this.db.colWithIds$('users');
     this.usersRef$.map((users) => users.filter(user => user.uid !== this.auth.uid));

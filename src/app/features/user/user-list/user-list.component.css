@@ -1,27 +1,22 @@
-.mat-list-icon {
-    color: rgba(0, 0, 0, 0.54);
-  }
-.list-icon-on {
-    color: rgba(0, 255, 0, 0.54);
-    margin-right: 10px;
-  }
-  .list-icon-off {
-    color: rgba(255, 0, 0, 0.54);
-    margin-right: 10px;
-  }
-  .list-icon-aw {
-    color: rgba(255, 255, 0, 0.54);
-    margin-right: 10px;
-  }
-  .list-icon-uk {
-    color: rgba(0, 0, 0, 0.54);
-    margin-right: 10px;
-  }
-  .users-list-card {
-    max-width: 500px;
-    margin-bottom: 16px;
-    padding-top: 24px;
-    padding-right: 0px;
-    padding-bottom: 0px;
-    padding-left: 0px;
+/* Structure */
+.container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+
+}
+
+.example-header {
+  min-height: 64px;
+  padding: 8px 24px 0;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
 }

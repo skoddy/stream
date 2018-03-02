@@ -6,7 +6,6 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireDatabaseModule } from 'angularfire2/database-deprecated';
 /* our own custom services  */
 import { AuthService } from './auth.service';
-import { UserService, UserDatabase, UserDataSource } from './user.service';
 import { FirebaseService } from './firebase.service';
 import { ToastService } from './toast.service';
 import { AuthGuard } from './auth.guard';
@@ -21,9 +20,6 @@ import { AuthGuard } from './auth.guard';
   providers: [
     /* our own custom services  */
     AuthService,
-    UserService,
-    UserDatabase,
-    UserDataSource,
     FirebaseService,
     ToastService,
     AuthGuard
