@@ -7,6 +7,7 @@ import { PostListComponent } from './features/posts/post-list/post-list.componen
 import { UserListComponent } from './features/user/user-list/user-list.component';
 import { AuthGuard } from '@app/core';
 import { ProfileComponent } from '@app/features/profile/profile.component';
+import { TestComponent } from './test/test.component';
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {
@@ -15,7 +16,8 @@ const routes: Routes = [
       { path: '', component: PostListComponent },
       { path: 'posts', component: PostListComponent },
       { path: 'userlist', component: UserListComponent },
-      { path: 'profile', component: ProfileComponent }
+      { path: 'profile', component: ProfileComponent },
+      { path: 'test', component: TestComponent }
     ]
   },
   { path: '**', component: LoginComponent }

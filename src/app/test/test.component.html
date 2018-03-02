@@ -1,0 +1,12 @@
+<p>
+  test works!
+</p>
+<p>
+  {{userId}}
+</p>
+<div *ngFor="let user of usersR | async">
+  {{user.displayName}}
+</div>
+<div *ngFor="let user of usersO$ | async as usersO">
+  {{user.displayName}}
+</div>

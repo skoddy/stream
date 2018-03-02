@@ -1,15 +1,12 @@
 <div class="profile" *ngIf="userRef | async as user">
   <mat-card class="profile-card">
-    <mat-card-header>
-      <mat-card-title>Dein Profil</mat-card-title>
-    </mat-card-header>
     <mat-card-content>
       <div class="profile-container">
         <mat-form-field floatLabel="always">
-          <input [value]="user.displayName" matInput placeholder="Name">
+          <input class="disabled-input" [value]="user.displayName" matInput placeholder="Name" disabled>
         </mat-form-field>
         <mat-form-field floatLabel="always">
-          <input [value]="user.email" matInput placeholder="E-Mail">
+          <input class="disabled-input" [value]="user.email" matInput placeholder="E-Mail" disabled>
         </mat-form-field>
 
       </div>

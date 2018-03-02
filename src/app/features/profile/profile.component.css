@@ -8,3 +8,6 @@
     max-width: 500px;
     margin-bottom: 16px;
 }
+.disabled-input {
+  color: rgba(0,0,0,1.0);
+}

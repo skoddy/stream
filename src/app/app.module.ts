@@ -25,6 +25,7 @@ import { UserStatusComponent } from './features/user/user-status/user-status.com
 import { ProfileComponent } from './features/profile/profile.component';
 import { PostMenuComponent } from './features/posts/post-menu/post-menu.component';
 import { SubBtnComponent } from './features/user/sub-btn/sub-btn.component';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SubBtnComponent } from './features/user/sub-btn/sub-btn.component';
     UserStatusComponent,
     ProfileComponent,
     PostMenuComponent,
-    SubBtnComponent
+    SubBtnComponent,
+    TestComponent
   ],
   imports: [
     BrowserModule,

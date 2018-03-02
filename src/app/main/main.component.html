@@ -18,13 +18,13 @@
         <mat-icon matListIcon class="nav-mat-icon">group</mat-icon>
         <span class="mat-body-2 leftbar-link"> Personen </span>
       </a>
-      <a mat-list-item class="my-list-item-link" routerLink="/myposts" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
-        <mat-icon class="nav-mat-icon" matListIcon>list</mat-icon>
-        <span class="mat-body-2 leftbar-link"> Meine Posts </span>
-      </a>
       <a mat-list-item class="my-list-item-link" routerLink="/chat" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
         <mat-icon class="nav-mat-icon" matListIcon>chat_bubble</mat-icon>
         <span class="mat-body-2 leftbar-link"> Chat </span>
+      </a>
+      <a mat-list-item class="my-list-item-link" routerLink="/test" routerLinkActive="active" (click)="mobileQuery.matches ? sidenav.close('mouse') : 'false' ">
+        <mat-icon class="nav-mat-icon" matListIcon>build</mat-icon>
+        <span class="mat-body-2 leftbar-link"> Test </span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
