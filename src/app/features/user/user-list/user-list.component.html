@@ -3,9 +3,9 @@
   <mat-table [dataSource]="dataSource" matSort>
 
     <!-- ID Column -->
-    <ng-container matColumnDef="uid">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> UID </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.uid}} </mat-cell>
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> E-Mail </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.email}} </mat-cell>
     </ng-container>
 
     <!-- Progress Column -->
