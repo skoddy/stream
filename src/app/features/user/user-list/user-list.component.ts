@@ -1,37 +1,44 @@
-import { Component, OnInit } from '@angular/core';
-import { FirebaseService } from '@app/core/firebase.service';
-import { AuthService } from '@app/core/auth.service';
-import { ToastService } from '@app/core/toast.service';
-import { Observable } from '@firebase/util';
-import { filter } from 'rxjs/operator/filter';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { Subject } from 'rxjs/Subject';
 
-export interface Status {
-  status: string;
-}
+// For MD Data Table.
+import { MatPaginator } from '@angular/material';
+import { UserService, UserDataSource, UserDatabase } from '@app/core';
+
+import { User } from '../../../user-model';
+
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
 export class UserListComponent implements OnInit {
-  usersRef: any;
-  users: any;
-  constructor(private db: FirebaseService, private auth: AuthService, private toast: ToastService) {
-    this.usersRef = db.colWithIds$('users');
-    this.users = this.usersRef.map((users) => users.filter(user => user.uid !== this.auth.uid));
+  private result: boolean;
+  user: User[];
+  users: User[];
 
-
-  }
-/*   getEpics():Observable<Epic[]> {
-    return this.http.get(this.url + "getEpics")
-      .map(this.extractData)
-      .catch(this.handleError);
-  }
-  getEpic(id: number): Observable<Epic> {
-    return this.getEpics()
-      .map(epics => epics.filter(epic => epic.id !== id)[0]);
-  } */
+  startAt = new Subject();
+  endAt = new Subject();
+  lastKeypress: 0;
+  dataSource: UserDataSource | null;
+  displayedColumns = [
+    'uid',
+    'displayName'
+  ];
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator;
+  public dataLength: any;
+  constructor(
+    private userService: UserService,
+    private userDatabase: UserDatabase
+  ) { }
   ngOnInit() {
+    this.userDatabase.getUsers()
+    .subscribe(members => {
+        this.dataSource = new UserDataSource(this.userDatabase, this.paginator);
+        this.dataLength = members;
+    });
   }
 
 }

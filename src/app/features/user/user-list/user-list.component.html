@@ -1,12 +1,27 @@
-<div class="users-list">
-  <mat-card class="users-list-card">
-    <mat-nav-list>
-      <h3 mat-subheader>Personen</h3>
-      <div *ngFor="let user of users | async">
-        {{user.displayName}}
+<div class="example-container mat-elevation-z8">
 
-      </div>
+  <mat-table [dataSource]="dataSource" matSort>
 
-    </mat-nav-list>
-  </mat-card>
+    <!-- ID Column -->
+    <ng-container matColumnDef="uid">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> UID </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.uid}} </mat-cell>
+    </ng-container>
+
+    <!-- Progress Column -->
+    <ng-container matColumnDef="displayName">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Progress </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.displayName}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;">
+    </mat-row>
+  </mat-table>
+
+  <mat-paginator #paginator
+  [length]="dataLength?.length"
+  [pageIndex]="0"
+  [pageSize]="5"
+  [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
 </div>
