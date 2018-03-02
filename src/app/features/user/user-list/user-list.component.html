@@ -1,16 +1,18 @@
 <div class="container mat-elevation-z2">
-
-  <mat-table [dataSource]="dataSource" matSort>
+  <div class="user-list-header">
+ <h1 class="mat-headline">Personen</h1>
+  </div>
+  <mat-table [dataSource]="dataSource">
 
     <!-- ID Column -->
     <ng-container matColumnDef="uid">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Aboniert </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> Aboniert </mat-header-cell>
       <mat-cell *matCellDef="let row"> <app-sub-btn [uid]="row.uid"></app-sub-btn> </mat-cell>
     </ng-container>
 
     <!-- Progress Column -->
     <ng-container matColumnDef="displayName">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Progress </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
       <mat-cell *matCellDef="let row"> {{row.displayName}} </mat-cell>
     </ng-container>
 
