@@ -34,7 +34,7 @@ export class TestComponent implements OnInit {
     return this.db.col$('users');
   }
   fail() {
-    this.toast.sendFailMsg('asd');
+    this.toast.sendErrorMsg('asd');
   }
   ok() {
     this.toast.sendOkMsg('asd');
