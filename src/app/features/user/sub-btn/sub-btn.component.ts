@@ -38,10 +38,10 @@ export class SubBtnComponent implements OnInit {
   }
   unSubscribeUser(uid: string) {
     console.log(`unsubbed user ${uid}`);
-    this.db.delete(`users/${this.auth.uid}/subscriptions/${uid}`).then(() => this.toast.sendMsg('Posts nicht mehr Abonniert', ''));
+    this.db.delete(`users/${this.auth.uid}/subscriptions/${uid}`).then(() => this.toast.sendOkMsg('Posts nicht mehr Abonniert'));
   }
   subscribeUser(uid: string) {
     console.log(`subbed user ${uid}`);
-    this.db.set(`users/${this.auth.uid}/subscriptions/${uid}`, { uid: uid }).then(() => this.toast.sendMsg('Posts Abonniert', ''));
+    this.db.set(`users/${this.auth.uid}/subscriptions/${uid}`, { uid: uid }).then(() => this.toast.sendOkMsg('Posts Abonniert'));
   }
 }

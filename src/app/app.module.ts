@@ -26,6 +26,8 @@ import { ProfileComponent } from './features/profile/profile.component';
 import { PostMenuComponent } from './features/posts/post-menu/post-menu.component';
 import { SubBtnComponent } from './features/user/sub-btn/sub-btn.component';
 import { TestComponent } from './test/test.component';
+import { OkToastComponent } from './toasts/ok-toast/ok-toast.component';
+import { FailToastComponent } from './toasts/fail-toast/fail-toast.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +42,9 @@ import { TestComponent } from './test/test.component';
     ProfileComponent,
     PostMenuComponent,
     SubBtnComponent,
-    TestComponent
+    TestComponent,
+    OkToastComponent,
+    FailToastComponent
   ],
   imports: [
     BrowserModule,
@@ -51,6 +55,7 @@ import { TestComponent } from './test/test.component';
     CoreModule,
     AngularFireModule.initializeApp(firebaseConfig),
   ],
+  entryComponents: [OkToastComponent, FailToastComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

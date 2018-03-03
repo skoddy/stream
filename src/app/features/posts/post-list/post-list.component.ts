@@ -4,6 +4,7 @@ import { AuthService } from '@app/core';
 import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { map } from 'rxjs/operators/map';
+import { ToastService } from '@app/core/toast.service';
 
 export interface Post {
   uid: string;
@@ -34,7 +35,10 @@ export class PostListComponent implements OnInit {
   content: string;
   category: string;
 
-  constructor(private db: FirebaseService, private auth: AuthService) {
+  constructor(
+    private db: FirebaseService,
+    private auth: AuthService,
+    private toast: ToastService) {
     this.arrayOfSubscribedUsers = new Array();
     // Query the collection in which the current user saved his subscriptions
     this.subscriptions$ = db.col$(`users/${this.auth.uid}/subscriptions`);
@@ -81,6 +85,7 @@ export class PostListComponent implements OnInit {
       content: this.content,
       category: this.category
     });
+    this.toast.sendOkMsg('POST GESPEICHERT');
     this.content = undefined;
     this.category = undefined;
   }

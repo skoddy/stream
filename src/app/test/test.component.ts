@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FirebaseService } from '@app/core';
 import { Observable } from 'rxjs/Observable';
+import { ToastService } from '@app/core/toast.service';
 
 @Component({
   selector: 'app-test',
@@ -14,7 +15,7 @@ export class TestComponent implements OnInit {
   usersR: any;
   userDoc: any;
   user: any;
-  constructor(private db: FirebaseService) { }
+  constructor(private db: FirebaseService, private toast: ToastService) { }
 
   ngOnInit() {
     this.userDoc = this.db.doc('users/ufTovvdfDDUASDSTzaWtjZ3Wif62');
@@ -31,5 +32,11 @@ export class TestComponent implements OnInit {
   }
   getUsersOb() {
     return this.db.col$('users');
+  }
+  fail() {
+    this.toast.sendFailMsg('asd');
+  }
+  ok() {
+    this.toast.sendOkMsg('asd');
   }
 }

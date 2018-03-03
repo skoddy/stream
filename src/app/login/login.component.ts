@@ -64,12 +64,12 @@ export class LoginComponent implements OnInit {
   // Step 1
   signup() {
     if (this.spassword.value !== this.spasswordcheck.value) {
-      this.toast.sendMsg('Die Passwörter stimmen nicht überein.');
+      this.toast.sendErrorMsg('Die Passwörter stimmen nicht überein.');
       return;
     }
     return this.afAuth.auth.createUserWithEmailAndPassword(this.semail.value, this.spassword.value)
       .then((user) => {
-        this.toast.sendMsg('Konto erstellt. Sie können sich anmelden.');
+        this.toast.sendOkMsg('Konto erstellt. Sie können sich anmelden.');
 
         this.auth.upsertUserData(user, { displayName: this.sname.value });
         this.step = 'signed';
@@ -93,7 +93,7 @@ export class LoginComponent implements OnInit {
   }
   handleError(error: any) {
     const errorCode = error.code;
-    this.toast.sendMsg(authErrorCodes[errorCode]);
+    this.toast.sendErrorMsg(authErrorCodes[errorCode]);
   }
   // Step 2
   setCatchPhrase(user) {

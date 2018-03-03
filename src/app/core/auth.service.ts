@@ -160,7 +160,7 @@ export class AuthService {
   // If error, console log and toast user
   private handleError(error: Error) {
     console.error(error);
-    this.toast.sendMsg(error.message, 'OK');
+    this.toast.sendErrorMsg(error.message);
   }
 
   // Sets user data to firestore after succesful login

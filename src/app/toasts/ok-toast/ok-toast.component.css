@@ -1,0 +1,9 @@
+.toast-container {
+    display: flex;
+}
+.toast-msg {
+    padding-left: 12px;
+}
+.toast-icon-error {
+    color:green;
+}
