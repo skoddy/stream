@@ -1,7 +1,13 @@
 .stream-list-create-textfield {
     width: 100%;
 }
-
+.loader {
+  height: 3px;
+  position: fixed;
+  top: 56px;
+  z-index: 3;
+  left: 0;
+}
 .spacer {
     flex: 1 1 auto;
 }

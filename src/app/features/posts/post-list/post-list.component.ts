@@ -5,6 +5,7 @@ import { Observable } from 'rxjs/Observable';
 import { combineLatest } from 'rxjs/observable/combineLatest';
 import { map } from 'rxjs/operators/map';
 import { ToastService } from '@app/core/toast.service';
+import { tap } from 'rxjs/operators';
 
 export interface Post {
   uid: string;
@@ -34,7 +35,7 @@ export class PostListComponent implements OnInit {
   arrayOfSubscribedUsers: Array<Observable<Post>>;
   content: string;
   category: string;
-
+loading = true;
   constructor(
     private db: FirebaseService,
     private auth: AuthService,
@@ -62,7 +63,8 @@ export class PostListComponent implements OnInit {
         // order of emission is important
         map(arr => arr.reduce((acc, cur) => acc.concat(cur))),
         // Sort by date created
-        map(items => items.sort(this.sortByCreatedAt))
+        map(items => items.sort(this.sortByCreatedAt)),
+        tap(val => this.loading = false)
       );
     });
   }

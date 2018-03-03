@@ -1,3 +1,6 @@
+<div *ngIf="loading">
+    <mat-progress-bar class="loader" mode="indeterminate"></mat-progress-bar>
+</div>
 <div class="stream-list">
   <mat-card class="stream-list-card">
     <mat-form-field class="stream-list-select-cat">
@@ -18,12 +21,9 @@
       <button color="primary" [disabled]="content?.length < 2 || content?.length > 500 || !category" mat-raised-button (click)="createPost()">STREAM!</button>
     </mat-card-actions>
   </mat-card>
-  <div *ngIf="posts$ | async; let posts; else loading">
+  <div *ngIf="posts$ | async; let posts;">
     <div *ngFor="let post of posts">
       <app-post-detail [post]="post"></app-post-detail>
     </div>
   </div>
-  <ng-template #loading>
-    <mat-spinner></mat-spinner>
-  </ng-template>
 </div>
