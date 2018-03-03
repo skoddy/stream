@@ -1,7 +1,7 @@
 <div class="demo-sidenav-area">
 
   <mat-sidenav-container>
-    <mat-sidenav class="left-sidenav" #start (open)="myinput.focus()" mode="over" fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0">
+    <mat-sidenav class="left-sidenav" #start (open)="myinput.focus()" [mode]="mobileQuery.matches ? 'push' : 'side'" fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0" [opened]="mobileQuery.matches ? 'false' : 'true'">
 <div class="left-sidenav-header" [class.left-sidenav-header-mobile]="mobileQuery.matches">
           <div class="sidenav-btn">
             <button mat-icon-button (click)="start.toggle(undefined, 'mouse')">
@@ -13,19 +13,19 @@
       <mat-divider></mat-divider>
 
       <mat-nav-list dense role="navigation">
-        <a mat-list-item class="left-sidenav-link" routerLink="/posts" routerLinkActive="left-sidenav-link-active" (click)="start.close('mouse')">
+        <a mat-list-item class="left-sidenav-link" routerLink="/posts" routerLinkActive="left-sidenav-link-active" (click)="mobileQuery.matches ? start.close('mouse') : 'false' ">
           <mat-icon matListIcon class="left-sidenav-icon" routerLinkActive="left-sidenav-icon-active">home</mat-icon>
           <span class="left-sidenav-link"> Home </span>
         </a>
-        <a mat-list-item class="left-sidenav-link" routerLink="/userlist" routerLinkActive="left-sidenav-link-active" (click)="start.close('mouse')">
+        <a mat-list-item class="left-sidenav-link" routerLink="/userlist" routerLinkActive="left-sidenav-link-active" (click)="mobileQuery.matches ? start.close('mouse') : 'false' ">
           <mat-icon matListIcon class="left-sidenav-icon" routerLinkActive="left-sidenav-icon-active">group</mat-icon>
           <span class="left-sidenav-link"> Personen </span>
         </a>
-        <a mat-list-item class="left-sidenav-link" routerLink="/chat" routerLinkActive="left-sidenav-link-active" (click)="start.close('mouse')">
+        <a mat-list-item class="left-sidenav-link" routerLink="/chat" routerLinkActive="left-sidenav-link-active" (click)="mobileQuery.matches ? start.close('mouse') : 'false' ">
           <mat-icon matListIcon class="left-sidenav-icon" routerLinkActive="left-sidenav-icon-active">chat_bubble</mat-icon>
           <span class="left-sidenav-link"> Chat </span>
         </a>
-        <a mat-list-item class="left-sidenav-link" routerLink="/test" routerLinkActive="left-sidenav-link-active" (click)="start.close('mouse')">
+        <a mat-list-item class="left-sidenav-link" routerLink="/test" routerLinkActive="left-sidenav-link-active" (click)="mobileQuery.matches ? start.close('mouse') : 'false' ">
           <mat-icon matListIcon class="left-sidenav-icon" routerLinkActive="left-sidenav-icon-active">build</mat-icon>
           <span class="left-sidenav-link"> Test </span>
         </a>
@@ -34,9 +34,17 @@
     <div>
       <input type="hidden" name="UserBrowser" value="" #myinput>
     </div>
-    <mat-sidenav #end position="end" fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0">
-      End Side Sidenav
-      <br>
+    <mat-sidenav class="right-sidenav" #end mode="side" position="end" fixedInViewport="true" fixedTopGap="56" fixedBottomGap="0">
+        <mat-nav-list>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+            <a mat-list-item routerLink="/test"> Lorem Ipsum </a>
+         </mat-nav-list>
       <button mat-button (click)="end.close('mouse')">Close</button>
 
     </mat-sidenav>
@@ -50,7 +58,8 @@
         </div>
         STREAM
         <span class="spacer"></span>
-
+        <button mat-icon-button><mat-icon (click)="end.toggle(undefined, 'mouse')">group</mat-icon></button>
+        
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>more_vert</mat-icon>
         </button>

@@ -94,4 +94,7 @@ display: flex;
     height: 40px !important;
 padding: 0 24px !important;
   }
+  .right-sidenav {
+    z-index: 0 !important;
+  }
 }
