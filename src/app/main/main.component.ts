@@ -29,6 +29,7 @@ export class MainComponent implements OnInit {
   showHeader = false;
   showFooter = false;
   modeIndex = 0;
+  darktheme: boolean;
   get mode() { return ['side', 'over', 'push'][this.modeIndex]; }
   get fixedTop() { return this.fixed && this.showHeader && !this.coverHeader ? 64 : 0; }
   get fixedBottom() { return this.fixed && this.showFooter && !this.coverHeader ? 64 : 0; }
@@ -51,6 +52,15 @@ export class MainComponent implements OnInit {
   get photoURL() { return this.auth.photoURL; }
   logout() {
     this.auth.signOut();
+  }
+  switchTheme() {
+    if (!this.darktheme) {
+      this.darktheme = true;
+      console.log('true');
+    } else {
+      this.darktheme = false;
+      console.log('false');
+    }
   }
   OnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);

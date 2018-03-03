@@ -1,4 +1,4 @@
-<div class="demo-sidenav-area">
+<div class="demo-sidenav-area" [class.unicorn-dark-theme]="darktheme">
 
   <mat-sidenav-container>
     <mat-sidenav class="left-sidenav" #start (open)="myinput.focus()" [mode]="mobileQuery.matches ? 'over' : 'side'" fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0" [opened]="mobileQuery.matches ? 'false' : 'true'">
@@ -58,6 +58,7 @@
         </div>
         STREAM
         <span class="spacer"></span>
+        <button mat-icon-button><mat-icon (click)="switchTheme()">invert_colors</mat-icon></button>
         <button mat-icon-button><mat-icon (click)="end.toggle()">group</mat-icon></button>
         
         <button mat-icon-button [matMenuTriggerFor]="menu">
