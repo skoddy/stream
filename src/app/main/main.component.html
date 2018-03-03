@@ -1,7 +1,7 @@
 <div class="demo-sidenav-area">
 
   <mat-sidenav-container>
-    <mat-sidenav class="left-sidenav" #start (open)="myinput.focus()" [mode]="mobileQuery.matches ? 'push' : 'side'" fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0" [opened]="mobileQuery.matches ? 'false' : 'true'">
+    <mat-sidenav class="left-sidenav" #start (open)="myinput.focus()" [mode]="mobileQuery.matches ? 'over' : 'side'" fixedInViewport="true" fixedTopGap="0" fixedBottomGap="0" [opened]="mobileQuery.matches ? 'false' : 'true'">
 <div class="left-sidenav-header" [class.left-sidenav-header-mobile]="mobileQuery.matches">
           <div class="sidenav-btn">
             <button mat-icon-button (click)="start.toggle(undefined, 'mouse')">
