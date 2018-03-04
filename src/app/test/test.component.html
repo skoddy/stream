@@ -1,14 +1,8 @@
 <p>
   test works!
 </p>
-<button mat-button (click)="fail()">text</button>
-<button mat-button (click)="ok()">text</button>
-<p>
-  {{userId}}
-</p>
-<div *ngFor="let user of usersR | async">
-  {{user.displayName}}
-</div>
-<div *ngFor="let user of usersO$ | async as usersO">
+
+
+<div *ngFor="let user of followedUserPostsRef | async">
   {{user.displayName}}
 </div>
