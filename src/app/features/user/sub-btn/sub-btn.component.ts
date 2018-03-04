@@ -31,7 +31,6 @@ export class SubBtnComponent implements OnInit {
       this.hasSubscribed = false;
       if (data && (data.uid === this.uid)) {
         this.hasSubscribed = true;
-        console.log(`${data.uid} und ${this.uid}`);
       }
     });
 

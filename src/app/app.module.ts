@@ -28,6 +28,8 @@ import { SubBtnComponent } from './features/user/sub-btn/sub-btn.component';
 import { TestComponent } from './test/test.component';
 import { OkToastComponent } from './toasts/ok-toast/ok-toast.component';
 import { FailToastComponent } from './toasts/fail-toast/fail-toast.component';
+import { UserDetailComponent } from './features/user/user-detail/user-detail.component';
+import { ViernullvierComponent } from './viernullvier/viernullvier.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +46,9 @@ import { FailToastComponent } from './toasts/fail-toast/fail-toast.component';
     SubBtnComponent,
     TestComponent,
     OkToastComponent,
-    FailToastComponent
+    FailToastComponent,
+    UserDetailComponent,
+    ViernullvierComponent
   ],
   imports: [
     BrowserModule,

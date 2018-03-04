@@ -43,6 +43,7 @@ export class UserListComponent implements OnInit {
 
   constructor(public db: FirebaseService,
     public auth: AuthService,
+    public router: Router,
     @Inject(FirebaseApp) fb) {
     // Fill up the database with 100 users.
     this.usersRef$ = this.db.colWithIds$('users');
@@ -56,7 +57,10 @@ export class UserListComponent implements OnInit {
         this.dataLength = members;
       });
   }
-
+getUser(uid) {
+  console.log(uid);
+  this.router.navigate([`user/${uid}`]);
+}
 }
 
 @Injectable()

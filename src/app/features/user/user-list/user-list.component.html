@@ -13,7 +13,7 @@
     <!-- Progress Column -->
     <ng-container matColumnDef="displayName">
       <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-      <mat-cell *matCellDef="let row"> {{row.displayName}} </mat-cell>
+      <mat-cell routerLink="/user/{{row.id}}" *matCellDef="let row"> {{row.displayName}} </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

@@ -14,7 +14,7 @@ export class PostMenuComponent {
   }
 
   deletePost(id: string) {
-    const postRef = this.db.doc(`users/${this.currentUid}/posts/${id}`);
+    const postRef = this.db.doc(`posts/${id}`);
     console.log(id);
     return this.db.delete(postRef).then(
       this.toast.sendOkMsg('POST GELÖSCHT', 'OK')

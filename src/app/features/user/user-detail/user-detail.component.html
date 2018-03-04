@@ -1,0 +1,9 @@
+
+<mat-card *ngIf="userRef | async as user">
+  <div class="mat-headline">
+      <div mat-card-avatar class="user-detail-avatar" [ngStyle]="{'background-image': 'url(' + user.photoURL + ')'}"></div>
+  {{user.displayName}}
+  </div>
+  
+</mat-card>
+
