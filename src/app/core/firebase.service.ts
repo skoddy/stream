@@ -23,6 +23,18 @@ export class FirebaseService {
   get timestamp() {
     return firebase.firestore.FieldValue.serverTimestamp();
   }
+  private batchUpdate(updates: any) {
+    const batch = firebase.firestore().batch();
+    for (const key in updates) {
+      if (updates.hasOwnProperty(key)) {
+        const path = key;
+        const data = updates[key];
+        const ref = firebase.firestore().doc(path);
+        batch.set(ref, data);
+      }
+    }
+    return batch.commit();
+  }
   // this.db.upsert('notes/xyz', { content: 'hello world'})
   upsert<T>(ref: DocPredicate<T>, data: any) {
     const doc = this.doc(ref).snapshotChanges().take(1).toPromise();
