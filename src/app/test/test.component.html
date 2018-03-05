@@ -8,6 +8,8 @@
   </mat-form-field>
   <button mat-button (click)="newPost(content)">text</button>
 </mat-card>
+<button (click)="toggleFollowUser('njcHiz8vz4fI5qVtIRgKGdKqxWF2', 'true')" mat-button>follow</button>
+<button (click)="toggleFollowUser('njcHiz8vz4fI5qVtIRgKGdKqxWF2')" mat-button>unfollow</button>
 <div *ngFor="let post of posts$ | async">
   {{post.content}}
 </div>

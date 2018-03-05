@@ -11,7 +11,7 @@ export class ProfileComponent implements OnInit {
   userRef: any;
   constructor(private db: FirebaseService, private auth: AuthService) {
 
-    this.userRef = db.doc$(`users/${this.auth.uid}`);
+    this.userRef = db.doc$(`people/${this.auth.uid}`);
 
   }
 

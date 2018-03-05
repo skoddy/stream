@@ -30,21 +30,28 @@ export class FirebaseService {
     return newKey;
   }
 
-  private batchUpdate(updates: any) {
+  private batch(updates: any, type: string) {
     const batch = firebase.firestore().batch();
     for (const key in updates) {
       if (updates.hasOwnProperty(key)) {
         const path = key;
         const data = updates[key];
         const ref = firebase.firestore().doc(path);
-        batch.set(ref, {
-          ...data,
-          updatedAt: this.timestamp,
-          createdAt: this.timestamp
-        });
-        console.log('batch: ' + path );
+        switch (type) {
+          case 'set':
+            batch.set(ref, {
+              ...data
+            });
+            console.log('batch set: ' + path);
+            break;
+          case 'delete':
+            batch.delete(ref);
+            console.log('batch delete: ' + path);
+            break;
+        }
       }
     }
+
     return batch.commit();
   }
   // this.db.upsert('notes/xyz', { content: 'hello world'})

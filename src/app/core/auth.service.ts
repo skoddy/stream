@@ -173,7 +173,6 @@ export class AuthService {
       photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
     };
 
-    this.db.upsert(`people/${user.uid}/subscriptions/${user.uid}`, {'uid': user.uid});
     return this.db.upsert(`people/${user.uid}`, newUser);
   }
 }
