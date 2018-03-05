@@ -36,7 +36,7 @@ export class AuthService {
       .switchMap((user) => {
         if (user) {
           // todo: upsert
-          return this.db.doc$(`users/${user.uid}`);
+          return this.db.doc$(`people/${user.uid}`);
         } else {
           return Observable.of(null);
         }
@@ -173,7 +173,7 @@ export class AuthService {
       photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
     };
 
-    this.db.upsert(`users/${user.uid}/subscriptions/${user.uid}`, {'uid': user.uid});
-    return this.db.upsert(`users/${user.uid}`, newUser);
+    this.db.upsert(`people/${user.uid}/subscriptions/${user.uid}`, {'uid': user.uid});
+    return this.db.upsert(`people/${user.uid}`, newUser);
   }
 }

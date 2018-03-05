@@ -26,7 +26,7 @@ export class SubBtnComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subsDoc$ = this.db.doc$(`users/${this.auth.uid}/subscriptions/${this.uid}`);
+    this.subsDoc$ = this.db.doc$(`people/${this.auth.uid}/subscriptions/${this.uid}`);
     this.sub = this.subsDoc$.subscribe((data) => {
       this.hasSubscribed = false;
       if (data && (data.uid === this.uid)) {

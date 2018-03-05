@@ -23,6 +23,13 @@ export class FirebaseService {
   get timestamp() {
     return firebase.firestore.FieldValue.serverTimestamp();
   }
+  getNewKey(ref: any) {
+    const _ref = firebase.firestore().collection(ref).doc();
+    const newKey = _ref.id;
+    console.log('new key: ' + newKey);
+    return newKey;
+  }
+
   private batchUpdate(updates: any) {
     const batch = firebase.firestore().batch();
     for (const key in updates) {
@@ -30,7 +37,12 @@ export class FirebaseService {
         const path = key;
         const data = updates[key];
         const ref = firebase.firestore().doc(path);
-        batch.set(ref, data);
+        batch.set(ref, {
+          ...data,
+          updatedAt: this.timestamp,
+          createdAt: this.timestamp
+        });
+        console.log('batch: ' + path );
       }
     }
     return batch.commit();

@@ -46,7 +46,7 @@ export class UserListComponent implements OnInit {
     public router: Router,
     @Inject(FirebaseApp) fb) {
     // Fill up the database with 100 users.
-    this.usersRef$ = this.db.colWithIds$('users');
+    this.usersRef$ = this.db.colWithIds$('people');
     this.usersRef$.map((users) => users.filter(user => user.uid !== this.auth.uid));
 
   }
@@ -59,7 +59,7 @@ export class UserListComponent implements OnInit {
   }
 getUser(uid) {
   console.log(uid);
-  this.router.navigate([`user/${uid}`]);
+  this.router.navigate([`people/${uid}`]);
 }
 }
 
@@ -68,7 +68,7 @@ export class UserDatabase {
   /** Stream that emits whenever the data has been modified. */
   dataChange: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   get data(): User[] { return this.dataChange.value; }
-  private database = this.userService.db.colWithIds$('users');
+  private database = this.userService.db.colWithIds$('people');
   public getUsers(): Observable<User[]> {
     return this.database.map((users) => users.filter(user => user.uid !== this.userService.auth.uid));
   }

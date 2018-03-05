@@ -1,5 +1,13 @@
 <p>
   test works!
 </p>
-<button (click)="subscribeToFeed()">sub</button>
 
+<mat-card>
+  <mat-form-field>
+    <input #msg [(ngModel)]="content" matInput placeholder="label" value="value">
+  </mat-form-field>
+  <button mat-button (click)="newPost(content)">text</button>
+</mat-card>
+<div *ngFor="let post of posts$ | async">
+  {{post.content}}
+</div>
