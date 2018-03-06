@@ -8,6 +8,7 @@ import { User } from '../user-model';
 import { AuthService } from '@app/core/auth.service';
 export interface Subs {
   uid: string;
+  lastPost: string;
 }
 export interface Post {
   uid: string;
@@ -20,6 +21,8 @@ export interface Post {
   styleUrls: ['./test.component.css']
 })
 export class TestComponent implements OnInit {
+  followers: any;
+  feed$: void;
   posts$: any;
   firebaseRefs = [];
   followingRef: any;
@@ -31,85 +34,57 @@ export class TestComponent implements OnInit {
   }
   ngOnInit() {
     this.posts$ = this.getPosts();
-    this.startHomeFeedLiveUpdater();
-    this.updateHomeFeeds();
+    this.feed$ = this.getFeed();
+   this.startHomeFeedLiveUpdater();
+    // this.updateHomeFeeds();
   }
+
   subscribeToUserFeed(uid, callback, latestPostId) {
     return this.subscribeToFeed(`/users/${uid}/posts`, callback,
       latestPostId, true);
   }
-  subscribeToHomeFeed(callback, latestPostId) {
-    return this.subscribeToFeed(`/feed/${this.auth.uid}`, callback, latestPostId,
+  subscribeToHomeFeed(callback?, latestPostId?) {
+    return this.subscribeToFeed(`/feed/${this.auth.uid}/posts`, callback, latestPostId,
       true);
   }
   getPosts() {
     return this.getPaginatedFeed('/posts/', this.POSTS_PAGE_SIZE);
   }
-
-  toggleFollowUser(followedUserId, follow?) {
-    // Add or remove posts to the user's home feed.
-    console.log('toggle: ' + followedUserId);
-    return this.db.col(`/people/${followedUserId}/posts`).auditTrail()
-      .map(actions => {
-        return actions.map(posts => {
-          const data = posts.payload.doc.data() as Post[];
-          const id = posts.payload.doc.id;
-          const updateData = {};
-          const deleteData = {};
-          let lastPostId = true;
-          console.log('toggle data: ' + data);
-          // Add/remove followed user's posts to the home feed.
-          if (follow) {
-            console.log('followed update data: ' + id);
-            updateData[`/feed/${this.auth.uid}/posts/${id}`] = {
-              follow: follow ? !!follow : null
-            };
-          } else {
-            console.log('unfollowed delete data: ' + id);
-            deleteData[`/feed/${this.auth.uid}/posts/${id}`] = true;
-          }
-
-          lastPostId = id;
-
-
-          // Add/remove followed user to the 'following' list.
-          updateData[`/people/${this.auth.uid}/following/${followedUserId}`] = {
-            follow: follow ? lastPostId : null
-          }; // TODO nur einmal follow/unfollow
-
-          // Add/remove signed-in user to the list of followers.
-          // updateData[`/followers/${followedUserId}/${this.auth.uid}`] =
-          //     follow ? !!follow : null;
-          this.db.batch(deleteData, 'delete');
-          this.db.batch(updateData, 'set');
-          return { id, ...data };
-        });
-      }).subscribe(console.log);
+  getFeed() {
+    return this.getPaginatedFeed(`/feed/${this.auth.uid}/posts`, this.POSTS_PAGE_SIZE);
   }
-  updateHomeFeeds() {
-    const followingRef = this.db.col(`/people/${this.auth.uid}/following`);
-    followingRef.stateChanges().map(actions => {
-      actions.map(followingData => {
-        const _followingData = followingData.payload.doc.data();
-        const _followingUid = followingData.payload.doc.id;
-        if (!_followingUid) {
-          return;
-        }
-        console.log('following keys: ' + Object.keys(_followingData));
-        const updateOperations = Object.keys(_followingData).map(followedUid => {
-          const followedUserPostRef = this.db.col(`people/${followedUid}/posts`);
-          const lastSyncedPostId = _followingData[followedUid];
-          console.log('lastSyncedPostId: ' + _followingData[followedUid]);
-        });
-        return { _followingUid, ..._followingData };
+
+  toggleFollow(followedUserId, follow?) {
+    const postRef = this.db.colWithIds$(`/people/${followedUserId}/posts`);
+    postRef.subscribe(data => {
+      const updateData = {};
+      let lastPost = true;
+      console.log('follow');
+      // Add/remove followed user's posts to the home feed.
+      data.forEach(post => {
+        updateData[`/feed/${this.auth.uid}/posts/${post.id}`] = {
+          follow: follow ? !!follow : null
+        };
+        lastPost = post.createdAt;
       });
-    }).subscribe(console.log);
+      // Add/remove followed user to the 'following' list.
+      updateData[`/people/${this.auth.uid}/following/${followedUserId}`] = {
+        lastPost: follow ? lastPost : null
+      };
+      // Add/remove signed-in user to the list of followers.
+      updateData[`/followers/${followedUserId}_${this.auth.uid}`] = {
+        follow: follow ? !!follow : null
+      };
+      return this.db.batch(updateData, 'set');
+    });
   }
+
   /*****
   /* Hält den Feed aktuell mit den letzten Posts der gefolgten User
    *****/
 
   private startHomeFeedLiveUpdater() {
+    console.log('<Home Feed Live Updater>');
     // Zuerst holen wir uns die Liste der gefolgten Benutzer
     this.followingRef = this.db.col(`/people/${this.auth.uid}/following`);
     this.firebaseRefs.push(this.followingRef);
@@ -122,7 +97,7 @@ export class TestComponent implements OnInit {
         console.log('Data: ' + Object.keys(_followingData));
         this.followedUserPostsRef = this.db.col(`/people/${_followedUid}/posts`);
         if (_followingData instanceof String) {
-          this.followedUserPostsRef = this.followedUserPostsRef.orderByKey().startAt(_followingData);
+          this.followedUserPostsRef = this.followedUserPostsRef.orderByKey().startAt(_followingData.lastPost);
         }
         this.firebaseRefs.push(this.followedUserPostsRef);
         this.followedUserPostsRef.stateChanges(['added']).map(actionsb => {
@@ -131,8 +106,8 @@ export class TestComponent implements OnInit {
             const _postDataId = postData.payload.doc.id;
             if (_postDataId !== _followingData) {
               const updates = {};
-              updates[`/feed/${this.auth.uid}/posts/${_postDataId}`] = { value: true };
-              updates[`/people/${this.auth.uid}/following/${_followedUid}/posts/${_postDataId}`] = { postId: _postDataId };
+              updates[`/feed/${this.auth.uid}/posts/${_postDataId}`] = _postData;
+              // updates[`/people/${this.auth.uid}/following/${_followedUid}`] = {uid: _followedUid};
               this.db.batch(updates, 'set');
             }
             return { _postDataId, ..._postData };
@@ -141,15 +116,22 @@ export class TestComponent implements OnInit {
         return { _followedUid, ..._followingData };
       });
     }).subscribe(console.log);
-    // Wird die Subscription gelöscht, schalten wir den sb listener aus
-    this.followingRef.stateChanges(['removed']).map(action => {
-      return action.map(followingData => {
-        const followedUserId = followingData.payload.doc.id;
-        this.db.col$(`/people/${followedUserId}/posts`).unsubscribe();
-      });
-    }).subscribe(console.log);
+    console.log('</Home Feed Live Updater>');
   }
-
+homeFeedLiveUpdater() {
+  const followingRef = this.db.col(`/people/${this.auth.uid}/following`);
+  this.firebaseRefs.push(followingRef);
+  this.followers = followingRef.stateChanges(['added']);
+  this.followers.subscribe(followingData  => {
+    const followedUid = followingData.id;
+    console.log('followedUid: ' + followedUid);
+    let followedUserPostsRef = this.db.colWithIds$(`/people/${followedUid}/posts`);
+    if (followingData) {
+      followedUserPostsRef = this.db.colWithIds$(`/people/${followedUid}/posts`, ref => ref.startAt(followingData.lastPost));
+      console.log(followingData);
+    }
+  });
+}
   private subscribeToFeed(uri: string, callback: any, latestEntry: string, fetchPostDetails: boolean) {
     let feedRef = this.db.col(uri);
     if (latestEntry) {
@@ -177,9 +159,11 @@ export class TestComponent implements OnInit {
   }
 
   newPost(content?: string) {
+    console.log('<New Post>');
     const newPostKey = this.db.getNewKey('posts');
     const update = {};
-    update[`/posts/${newPostKey}`] = {
+    const data = {
+      key: newPostKey,
       content: content,
       createdAt: this.db.timestamp,
       author: {
@@ -188,8 +172,10 @@ export class TestComponent implements OnInit {
         photoURL: this.auth.photoURL
       }
     };
-    update[`/people/${this.auth.uid}/posts/${newPostKey}`] = { value: true };
-    update[`/feed/${this.auth.uid}/posts/${newPostKey}`] = { value: true };
+    update[`/posts/${newPostKey}`] = data;
+    update[`/people/${this.auth.uid}/posts/${newPostKey}`] = data;
+    update[`/feed/${this.auth.uid}/posts/${newPostKey}`] = data;
+    console.log('</New Post>');
     return this.db.batch(update, 'set').then(() => newPostKey);
   }
 }

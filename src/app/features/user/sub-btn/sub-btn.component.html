@@ -1,12 +1,12 @@
 <div *ngIf="hasSubscribed; then subscribed else notsubscribed"></div>
 
 <ng-template #subscribed>
-    <button mat-icon-button matTooltip="Unsubscribe" (click)="unSubscribeUser(uid)">
+    <button mat-icon-button matTooltip="Unsubscribe" (click)="toggleFollowUser(uid)">
         <mat-icon aria-label="Unsubscribe User">visibility_off</mat-icon>
     </button>
 </ng-template>
 <ng-template #notsubscribed>
-    <button (click)="subscribeUser(uid)" mat-icon-button color="warn" matTooltip="Subscribe">
+    <button (click)="toggleFollowUser(uid, true)" mat-icon-button color="warn" matTooltip="Subscribe">
         <mat-icon aria-label="Subscribe User">visibility</mat-icon>
     </button>
 
