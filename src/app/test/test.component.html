@@ -8,7 +8,7 @@
   </mat-form-field>
   <button mat-button (click)="newPost(content)">text</button>
 </mat-card>
-<button (click)="toggleFollow('njcHiz8vz4fI5qVtIRgKGdKqxWF2', 'true')" mat-button>follow</button>
+<button (click)="toggleFollow('njcHiz8vz4fI5qVtIRgKGdKqxWF2', true)" mat-button>follow</button>
 <button (click)="toggleFollow('njcHiz8vz4fI5qVtIRgKGdKqxWF2')" mat-button>unfollow</button>
 <mat-card>
   posts:
@@ -19,6 +19,6 @@
 <mat-card>
   feed:
   <div *ngFor="let feed of feed$ | async">
-       {{feed.content}}
+    {{feed.author.displayName}} - {{feed.content}}
   </div>
 </mat-card>

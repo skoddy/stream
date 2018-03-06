@@ -21,7 +21,7 @@
       <button color="primary" [disabled]="content?.length < 2 || content?.length > 500 || !category" mat-raised-button (click)="newPost()">STREAM!</button>
     </mat-card-actions>
   </mat-card>
-  <div *ngIf="feed$ | async; let posts;">
+  <div *ngIf="posts$ | async; let posts;">
     <div *ngFor="let post of posts">
       <app-post-detail [post]="post"></app-post-detail>
     </div>

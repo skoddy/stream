@@ -9,12 +9,13 @@ import { AuthService } from './auth.service';
 import { FirebaseService } from './firebase.service';
 import { ToastService } from './toast.service';
 import { AuthGuard } from './auth.guard';
+import { FeedService } from './feed.service';
 
 @NgModule({
   imports: [
     CommonModule,
     AngularFireAuthModule,
-    AngularFirestoreModule.enablePersistence(),
+    AngularFirestoreModule,
     AngularFireDatabaseModule
   ],
   providers: [
@@ -22,7 +23,8 @@ import { AuthGuard } from './auth.guard';
     AuthService,
     FirebaseService,
     ToastService,
-    AuthGuard
+    AuthGuard,
+    FeedService
   ]
 })
 export class CoreModule {

@@ -5,10 +5,10 @@
 /dist-server
 /tmp
 /out-tsc
-/src/*.spec.*
+
 # dependencies
 /node_modules
-
+/functions/node_modules
 # IDEs and editors
 /.idea
 .project

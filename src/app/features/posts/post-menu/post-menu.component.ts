@@ -13,10 +13,13 @@ export class PostMenuComponent {
     this.currentUid = auth.uid;
   }
 
-  deletePost(id: string) {
-    const postRef = this.db.doc(`posts/${id}`);
-    console.log(id);
-    return this.db.delete(postRef).then(
+  deletePost(postId: string) {
+    const updateObj = {};
+    updateObj[`/people/${this.auth.uid}/posts/${postId}`] = null;
+    updateObj[`/posts/${postId}`] = null;
+    updateObj[`/feed/${this.auth.uid}/posts/${postId}`] = null;
+    console.log(postId);
+    return this.db.batch(updateObj, 'delete').then(
       this.toast.sendOkMsg('POST GELÖSCHT', 'OK')
     );
   }

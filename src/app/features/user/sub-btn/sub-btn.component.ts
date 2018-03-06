@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { FirebaseService } from '@app/core';
 import { AuthService } from '@app/core';
 import { Observable } from 'rxjs/Observable';
 import { ToastService } from '@app/core/toast.service';
-
+import { Subscription } from 'rxjs/Subscription';
 export interface Subs {
   uid: string;
 }
@@ -15,6 +15,7 @@ export interface Subs {
 })
 export class SubBtnComponent implements OnInit {
 
+  toggleFollowRef: any;
   subsDoc$: Observable<any>;
   sub: any;
   hasSubscribed: boolean;
@@ -26,52 +27,60 @@ export class SubBtnComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subsDoc$ = this.db.doc$(`people/${this.auth.uid}/following/${this.uid}`);
+    this.subsDoc$ = this.db.doc$(`followers/${this.auth.uid}_${this.uid}`);
     this.sub = this.subsDoc$.subscribe((data) => {
       this.hasSubscribed = false;
-      if (data && (data.uid === this.uid)) {
+      if (data && data.follow === true) {
+        console.log(data.follow);
         this.hasSubscribed = true;
       }
     });
 
   }
+
+  OnDestroy() {
+
+  }
+
   toggleFollowUser(followedUserId, follow?) {
-    console.log('<Toggle Follow User>');
-    // Add or remove posts to the user's home feed.
-    console.log('toggle: ' + followedUserId);
-    return this.db.col(`/people/${followedUserId}/posts`).auditTrail()
-      .map(actions => {
-        return actions.map(posts => {
-          const data = posts.payload.doc.data();
-          const id = posts.payload.doc.id;
-          const updateData = {};
-          const deleteData = {};
-          let lastPostId = true;
-          console.log('toggle data: ' + data);
-          // Add/remove followed user's posts to the home feed.
-          if (follow) {
-            console.log('followed update data: ' + id);
-            updateData[`/feed/${this.auth.uid}/posts/${id}`] = data;
-            updateData[`/people/${this.auth.uid}/following/${followedUserId}`] = {uid: followedUserId};
-          } else {
-            console.log('unfollowed delete data: ' + id);
-            deleteData[`/feed/${this.auth.uid}/posts/${id}`] = true;
-            deleteData[`/people/${this.auth.uid}/following/${followedUserId}`] = true;
-          }
-
-          lastPostId = id;
-
-
-
-
-          // Add/remove signed-in user to the list of followers.
-          // updateData[`/followers/${followedUserId}/${this.auth.uid}`] =
-          //     follow ? !!follow : null;
-          this.db.batch(deleteData, 'delete');
-          this.db.batch(updateData, 'set');
-          return { id, ...data };
+    const followRef = this.db.colWithIds$(`/people/${followedUserId}/posts`, ref => ref.orderBy('createdAt', 'desc'));
+    this.toggleFollowRef = followRef.subscribe(data => {
+      const updateData = {};
+      let lastPostId: string;
+      let batchType = '';
+      if (follow) {
+        console.log('follow: ' + followedUserId);
+        batchType = 'set';
+        // Add/remove followed user's posts to the home feed.
+        data.forEach(post => {
+          updateData[`/feed/${this.auth.uid}/posts/${post.id}`] = post;
+          lastPostId = post.createdAt;
+          console.log('lastpostId: ' + lastPostId);
         });
-      }).subscribe(console.log('</Toggle Follow User>'));
+        // Add/remove followed user to the 'following' list.
+        updateData[`/people/${this.auth.uid}/following/${followedUserId}`] = {
+          lastPost: lastPostId
+        };
+        // Add/remove signed-in user to the list of followers.
+        updateData[`/followers/${this.auth.uid}_${followedUserId}`] = {
+          follow: follow ? !!follow : null
+        };
+        this.db.batch(updateData, batchType);
+      } else {
+        console.log('unfollow: ' + followedUserId);
+        batchType = 'delete';
+        // Add/remove followed user's posts to the home feed.
+        data.forEach(post => {
+          updateData[`/feed/${this.auth.uid}/posts/${post.id}`] = true;
+        });
+        // Add/remove followed user to the 'following' list.
+        updateData[`/people/${this.auth.uid}/following/${followedUserId}`] = true;
+        // Add/remove signed-in user to the list of followers.
+        updateData[`/followers/${this.auth.uid}_${followedUserId}`] = true;
+        this.db.batch(updateData, batchType);
+      }
+      this.toggleFollowRef.unsubscribe();
+    });
 
   }
   unSubscribeUser(uid: string) {
