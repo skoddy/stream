@@ -26,6 +26,13 @@ export interface PostId extends Post { id: string; }
   styleUrls: ['./test.component.css']
 })
 export class TestComponent implements OnInit {
+  sub: any;
+  unfollow: Subscription;
+  follow: Subscription;
+  private itemsCollection: AngularFirestoreCollection<Post>;
+  items: Observable<Post[]>;
+  toggleFollowRef: any;
+
   private followerCol: AngularFirestoreCollection<Follower>;
   follower: Observable<FollowerId[]>;
   followerSub: Subscription;
@@ -51,14 +58,16 @@ export class TestComponent implements OnInit {
   ngOnInit() {
     this.followedUserPostsSub = new Array();
     this.followerCol = this.afs.collection<Follower>(`/people/${this.auth.uid}/following`);
-    this.follower = this.followerCol.auditTrail(['added'])
+    this.follower = this.followerCol.snapshotChanges(['added'])
       .map(actions => {
         return actions.map(a => {
+          console.log(a.type);
+          const action = a.type;
           const data = a.payload.doc.data() as Follower;
           const id = a.payload.doc.id;
           console.log('follower added');
           console.log(id);
-          return { id, ...data };
+          return { id, ...data, action };
         });
       });
 
@@ -105,28 +114,30 @@ export class TestComponent implements OnInit {
       });
     });
     this.unfollowerCol = this.afs.collection<Follower>(`/people/${this.auth.uid}/following`);
-    this.unfollower = this.followerCol.stateChanges(['removed'])
+    this.unfollower = this.unfollowerCol.stateChanges(['removed'])
       .map(actions => {
         return actions.map(a => {
+          const action = a.type;
           const data = a.payload.doc.data() as Follower;
           const id = a.payload.doc.id;
           console.log('follower removed');
           console.log(id);
-          return { id, ...data };
+          return { id, ...data, action };
         });
       });
     this.unfollowerSub = this.unfollower.subscribe(_unfollowingData => {
       _unfollowingData.forEach(unfollowingData => {
-        console.log(unfollowingData.id);
+        console.log(unfollowingData);
       });
     });
-    this.unfollowerSub.unsubscribe();
+
     console.log(`onInit`);
   }
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy() {
     this.followerSub.unsubscribe();
+    this.unfollowerSub.unsubscribe();
     console.log(`onDestroy`);
   }
   newPost(content?: string) {
@@ -150,5 +161,55 @@ export class TestComponent implements OnInit {
     console.log('</New Post>');
     // return this.db.batch(update, 'set').then(() => newPostKey);
   }
+  followUser(followedUserId) {
+    const batch = firebase.firestore().batch();
+    this.itemsCollection = this.afs.collection<Post>(`/people/${followedUserId}/posts`, ref => ref.orderBy('createdAt', 'desc'));
+    this.items = this.itemsCollection.valueChanges();
+
+    this.follow = this.items.subscribe(data => {
+      let lastPostId: string;
+      console.log('follow: ' + followedUserId);
+      // Add followed user's posts to the home feed.
+      data.forEach(post => {
+        const postsRef = firebase.firestore().doc(`/feed/${this.auth.uid}/posts/${post.id}`);
+        batch.set(postsRef, post);
+        lastPostId = post.createdAt;
+        console.log('lastpostId: ' + lastPostId);
+      });
+      // Add followed user to the 'following' list.
+      const followingRef = firebase.firestore().doc(`/people/${this.auth.uid}/following/${followedUserId}`);
+      batch.set(followingRef, { lastPost: lastPostId });
+      // Add signed-in user to the list of followers.
+      const followRef = firebase.firestore().doc(`/followers/${this.auth.uid}_${followedUserId}`);
+      batch.set(followRef, { follow: true });
+      this.follow.unsubscribe();
+      return batch.commit();
+    });
+  }
+
+  unFollowUser(followedUserId) {
+    const batch = firebase.firestore().batch();
+    this.itemsCollection = this.afs.collection<Post>(`/people/${followedUserId}/posts`, ref => ref.orderBy('createdAt', 'desc'));
+    this.items = this.itemsCollection.valueChanges();
+    this.unfollow = this.items.subscribe(data => {
+      const updateData = {};
+      console.log('unfollow: ' + followedUserId);
+      // Remove followed user's posts to the home feed.
+      data.forEach(post => {
+        const postsRef = firebase.firestore().doc(`/feed/${this.auth.uid}/posts/${post.id}`);
+        batch.delete(postsRef);
+      });
+      // Remove followed user to the 'following' list.
+      const followingRef = firebase.firestore().doc(`/people/${this.auth.uid}/following/${followedUserId}`);
+      batch.delete(followingRef);
+      // Remove signed-in user to the list of followers.
+      const followRef = firebase.firestore().doc(`/followers/${this.auth.uid}_${followedUserId}`);
+      batch.delete(followRef);
+      this.unfollow.unsubscribe();
+      return batch.commit();
+    });
+
+  }
 
 }
+
