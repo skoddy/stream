@@ -58,7 +58,7 @@ export class TestComponent implements OnInit {
   ngOnInit() {
     this.followedUserPostsSub = new Array();
     this.followerCol = this.afs.collection<Follower>(`/people/${this.auth.uid}/following`);
-    this.follower = this.followerCol.snapshotChanges(['added'])
+    this.follower = this.followerCol.auditTrail(['added'])
       .map(actions => {
         return actions.map(a => {
           console.log(a.type);
@@ -114,7 +114,7 @@ export class TestComponent implements OnInit {
       });
     });
     this.unfollowerCol = this.afs.collection<Follower>(`/people/${this.auth.uid}/following`);
-    this.unfollower = this.unfollowerCol.stateChanges(['removed'])
+    this.unfollower = this.unfollowerCol.auditTrail(['removed'])
       .map(actions => {
         return actions.map(a => {
           const action = a.type;
