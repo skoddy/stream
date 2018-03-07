@@ -124,6 +124,15 @@ export class FirebaseService {
       });
     });
   }
+  colWithIdsAdded$<T>(ref: CollectionPredicate<T>, queryFn?): Observable<any[]> {
+    return this.col(ref, queryFn).snapshotChanges(['added']).map(actions => {
+      return actions.map(a => {
+        const data = a.payload.doc.data();
+        const id = a.payload.doc.id;
+        return { id, ...data };
+      });
+    });
+  }
   // this.db.inspectDoc('notes/xyz')
   // this.db.inspectCol('notes')
   inspectDoc(ref: DocPredicate<any>): void {

@@ -12,8 +12,6 @@ import { Subscription } from 'rxjs/Subscription';
 export interface Post {
   uid: string;
   createdAt: string;
-  displayName: string;
-  photoURL: string;
   content: string;
   category: string;
   author: {
