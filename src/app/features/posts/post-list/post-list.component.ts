@@ -6,6 +6,8 @@ import { combineLatest } from 'rxjs/observable/combineLatest';
 import { map } from 'rxjs/operators/map';
 import { ToastService } from '@app/core/toast.service';
 import { tap } from 'rxjs/operators';
+import { post } from 'selenium-webdriver/http';
+import { Subscription } from 'rxjs/Subscription';
 
 export interface Post {
   uid: string;
@@ -33,8 +35,9 @@ export interface NewPost {
   styleUrls: ['./post-list.component.css']
 })
 export class PostListComponent implements OnInit {
+  refObs: Observable<Post>;
   feed$: Observable<Post[]>;
-  stopFollowRef: any;
+  stopFollowKeys: any;
   followingRef: any;
   firebaseRefs = [];
   followedUserPostsRef: any;
@@ -51,31 +54,31 @@ export class PostListComponent implements OnInit {
     private toast: ToastService) {
     this.arrayOfSubscribedUsers = new Array();
     // Query the collection in which the current user saved his subscriptions
-/*     this.subscriptions$ = db.col$(`users/${this.auth.uid}/subscriptions`);
-    this.subscriptions$.subscribe((data) => {
-      for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-          const element = data[key];
-          // Query the documents of the subscribed user and save them in an array
-          this.arrayOfSubscribedUsers[key] = this.db.colWithIds$(`users/${element.uid}/posts`);
-        }
-      }
-      // Combine the arrays with combineLatest
-      // As soon as all streams have emitted at least one value
-      // each new emission produces a combined value through the result stream
-      this.posts$ = combineLatest<any[]>(...this.arrayOfSubscribedUsers).pipe(
-        // reduce() the values from the source observable
-        //
-        // concat() (verketten) streams by subscribing
-        // and emitting values from each input sequentially
-        // having ONE subscription at a time. i use concat because the
-        // order of emission is important
-        map(arr => arr.reduce((acc, cur) => acc.concat(cur))),
-        // Sort by date created
-        map(items => items.sort(this.sortByCreatedAt)),
-        tap(val => this.loading = false)
-      );
-    }); */
+    /*     this.subscriptions$ = db.col$(`users/${this.auth.uid}/subscriptions`);
+        this.subscriptions$.subscribe((data) => {
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              const element = data[key];
+              // Query the documents of the subscribed user and save them in an array
+              this.arrayOfSubscribedUsers[key] = this.db.colWithIds$(`users/${element.uid}/posts`);
+            }
+          }
+          // Combine the arrays with combineLatest
+          // As soon as all streams have emitted at least one value
+          // each new emission produces a combined value through the result stream
+          this.posts$ = combineLatest<any[]>(...this.arrayOfSubscribedUsers).pipe(
+            // reduce() the values from the source observable
+            //
+            // concat() (verketten) streams by subscribing
+            // and emitting values from each input sequentially
+            // having ONE subscription at a time. i use concat because the
+            // order of emission is important
+            map(arr => arr.reduce((acc, cur) => acc.concat(cur))),
+            // Sort by date created
+            map(items => items.sort(this.sortByCreatedAt)),
+            tap(val => this.loading = false)
+          );
+        }); */
   }
 
   ngOnInit() {
@@ -87,29 +90,31 @@ export class PostListComponent implements OnInit {
     return this.getPaginatedFeed(`/feed/${this.auth.uid}/posts`);
   }
   homeFeedLiveUpdater() {
+    this.firebaseRefs = new Array();
     // Make sure we listen on each followed people's posts.
-    this.followingRef = this.db.col(`/people/${this.auth.uid}/following`);
-    this.firebaseRefs.push(this.followingRef);
+    const followingRef = this.db.col(`/people/${this.auth.uid}/following`);
+    // this.firebaseRefs.push(followingRef);
 
-    this.followingRef.stateChanges(['added']).map(followingRef => {
-      followingRef.map(following => {
+    followingRef.stateChanges(['added']).map(followingRefData => {
+      followingRefData.map(following => {
         // Start listening the followed user's posts to populate the home feed.
         const followingData = following.payload.doc.data();
         const followedUid = following.payload.doc.id;
-
         if (following) {
-          this.followedUserPostsRef = this.db.col(`/people/${followedUid}/posts`, ref =>
-            ref.orderBy('createdAt', 'asc').startAt(followingData.lastPost));
+          this.followedUserPostsRef = this.db.col(`/people/${followedUid}/posts`,
+            ref => ref.orderBy('createdAt', 'asc').startAt(followingData.lastPost));
+          this.firebaseRefs[followedUid] = this.followedUserPostsRef;
         }
-        this.firebaseRefs.push(this.followedUserPostsRef);
 
-        this.followedUserPostsRef.stateChanges(['added']).map(followedUserPostsRef => {
-          followedUserPostsRef.map(followedUserPosts => {
+        this.followedUserPostsRef.stateChanges(['added']).map(followedUserPostsRefData => {
+          followedUserPostsRefData.map(followedUserPosts => {
             const followedUserPostsData = followedUserPosts.payload.doc.data();
             const followedUserPostsUid = followedUserPosts.payload.doc.id;
-
-            if (followedUserPostsData.createdAt !== followingData.lastPost) {
-              console.log('starting updates');
+            const postDate = followedUserPostsData.createdAt.getTime();
+            const lastDate = followingData.lastPost.getTime();
+            console.log(`dates: ${postDate} - ${lastDate}`);
+            if (postDate !== lastDate) {
+              console.log('Starting updates.');
               const updates = {};
               updates[`/feed/${this.auth.uid}/posts/${followedUserPostsUid}`] = followedUserPostsData;
               updates[`/people/${this.auth.uid}/following/${followedUid}`] = { lastPost: followedUserPostsData.createdAt };
@@ -117,24 +122,34 @@ export class PostListComponent implements OnInit {
             }
             return { followedUserPostsUid, ...followedUserPostsData };
           });
-        }).subscribe(console.log);
-        this.followingRef.stateChanges(['removed']).map(_followingRef => {
-          _followingRef.map(_following => {
-            // Stop listening the followed user's posts to populate the home feed.
-            const _followingData = _following.payload.doc.data();
-            const _followingUid = _following.payload.doc.id;
-            const followedUserId = followingData.key;
-            this.stopFollowRef = this.db.col(`/people/${_followingUid}/posts`);
-            // this.stopFollowRef.unsubscribe();
-            return { _followingUid, ..._followingData };
-          });
-        }).subscribe(console.log);
+        }).subscribe();
 
 
         return { followedUid, ...followingData };
       });
-    }).subscribe(console.log);
+    }).subscribe();
+
+    followingRef.stateChanges(['removed']).map(_followingRef => {
+      _followingRef.map(_following => {
+        // Stop listening the followed user's posts to populate the home feed.
+        const _followingData = _following.payload.doc.data();
+        const _followingUid = _following.payload.doc.id;
+        console.log('unsubbed');
+        this.stopFollowKeys = _followingUid;
+        // this.firebaseRefs[_followingUid].unsubscribe();
+        return { _followingUid, ..._followingData };
+      });
+    }).subscribe(data => {
+
+
+      this.firebaseRefs[this.stopFollowKeys].unsubscribe();
+
+
+      console.log(data);
+    });
+
   }
+
   private sortByCreatedAt(a, b) {
     if (a.createdAt < b.createdAt) { return 1; }
     if (a.createdAt > b.createdAt) { return -1; }
@@ -179,4 +194,5 @@ export class PostListComponent implements OnInit {
     console.log('Fetching entries from', uri, 'start at', earliestEntryId, 'page size', pageSize);
     return this.db.col$(uri, ref => ref.orderBy('createdAt', 'desc'));
   }
+
 }
