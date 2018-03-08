@@ -18,7 +18,8 @@
 </mat-card> -->
 <mat-card>
   feed:
-  <div *ngFor="let feed of feed | async">
-    {{feed.author.displayName}} - {{feed.content}}
+  <div *ngFor="let feed of feedCol | async">
+
+    {{ (feed.pathRef | doc | async)?.author.displayName }} - {{ (feed.pathRef | doc | async)?.content }}
   </div>
 </mat-card>
