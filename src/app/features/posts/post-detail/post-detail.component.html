@@ -1,9 +1,9 @@
 <mat-card class="stream-detail-card">
   <mat-card-header>
     <span class="spacer"></span>
-<app-post-menu [id]="post?.key" [uid]="post.author.uid"></app-post-menu>
-    <div mat-card-avatar class="stream-detail-avatar" [ngStyle]="{'background-image': 'url(' + post.author.photoURL + ')'}"></div>
-    <mat-card-title>{{ post.author.displayName }}</mat-card-title>
+<app-post-menu [id]="post?.id" [uid]="post.uid"></app-post-menu>
+    <div mat-card-avatar class="stream-detail-avatar" [ngStyle]="{'background-image': 'url(' + post.photoURL + ')'}"></div>
+    <mat-card-title>{{ post.displayName }}</mat-card-title>
     <mat-card-subtitle>
       <div *ngIf="post.createdAt; then done else pending"></div>
       <ng-template #done> {{ post.createdAt | date : 'd. LLLL yyyy, H:mm':'':'de'}}</ng-template>

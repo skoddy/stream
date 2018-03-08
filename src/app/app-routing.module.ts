@@ -3,9 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { CoreModule } from './core/core.module';
 import { MainComponent } from './main/main.component';
 import { LoginComponent } from './login/login.component';
+
 import { PostListComponent } from './features/posts/post-list/post-list.component';
+import { FeedListComponent } from './features/feed/feed-list/feed-list.component';
 import { UserListComponent } from './features/user/user-list/user-list.component';
 import { UserDetailComponent } from './features/user/user-detail/user-detail.component';
+
 import { AuthGuard } from '@app/core';
 import { ProfileComponent } from '@app/features/profile/profile.component';
 import { TestComponent } from './test/test.component';
@@ -15,7 +18,8 @@ const routes: Routes = [
   {
     path: '', component: MainComponent, canActivate: [AuthGuard],
     children: [
-      { path: '', component: PostListComponent },
+      { path: '', component: FeedListComponent },
+      { path: 'feed', component: FeedListComponent },
       { path: 'posts', component: PostListComponent },
       { path: 'userlist', component: UserListComponent },
       { path: 'user/:uid', component: UserDetailComponent },

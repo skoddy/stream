@@ -30,6 +30,7 @@ import { OkToastComponent } from './toasts/ok-toast/ok-toast.component';
 import { FailToastComponent } from './toasts/fail-toast/fail-toast.component';
 import { UserDetailComponent } from './features/user/user-detail/user-detail.component';
 import { ViernullvierComponent } from './viernullvier/viernullvier.component';
+import { FeedListComponent } from './features/feed/feed-list/feed-list.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { ViernullvierComponent } from './viernullvier/viernullvier.component';
     OkToastComponent,
     FailToastComponent,
     UserDetailComponent,
-    ViernullvierComponent
+    ViernullvierComponent,
+    FeedListComponent
   ],
   imports: [
     BrowserModule,

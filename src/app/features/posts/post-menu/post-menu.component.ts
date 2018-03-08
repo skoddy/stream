@@ -14,12 +14,9 @@ export class PostMenuComponent {
   }
 
   deletePost(postId: string) {
-    const updateObj = {};
-    updateObj[`/people/${this.auth.uid}/posts/${postId}`] = null;
-    updateObj[`/posts/${postId}`] = null;
-    updateObj[`/feed/${this.auth.uid}/posts/${postId}`] = null;
+
     console.log(postId);
-    return this.db.batch(updateObj, 'delete').then(
+    return this.db.delete(`/users/${this.auth.uid}/posts/${postId}`).then(
       this.toast.sendOkMsg('POST GELÖSCHT', 'OK')
     );
   }

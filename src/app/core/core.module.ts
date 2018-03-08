@@ -15,7 +15,7 @@ import { FeedService } from './feed.service';
   imports: [
     CommonModule,
     AngularFireAuthModule,
-    AngularFirestoreModule,
+    AngularFirestoreModule.enablePersistence(),
     AngularFireDatabaseModule
   ],
   providers: [

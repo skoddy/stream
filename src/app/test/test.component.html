@@ -16,10 +16,3 @@
       {{post.author.displayName}} - {{post.content}}
   </div>
 </mat-card> -->
-<mat-card>
-  feed:
-  <div *ngFor="let feed of feedCol | async">
-
-    {{ (feed.pathRef | doc | async)?.author.displayName }} - {{ (feed.pathRef | doc | async)?.content }}
-  </div>
-</mat-card>

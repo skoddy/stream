@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ToastService } from '@app/core/toast.service';
 import { AuthService } from '@app/core/auth.service';
-import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, DocumentChangeAction, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Subscription } from 'rxjs/Subscription';
 import * as firebase from 'firebase/app';
 import { FirebaseService } from '@app/core/firebase.service';
-import { concatMap, switchMap } from 'rxjs/operators';
+import { concatMap, switchMap, tap, map, mergeMap } from 'rxjs/operators';
 import { from } from 'rxjs/observable/from';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 export interface Follower { id: string; lastPost: any; }
 export interface FollowerId extends Follower { id: string; }
 export interface Post {
@@ -30,16 +31,11 @@ export interface PostId extends Post { id: string; }
 })
 export class TestComponent implements OnInit {
 
-
-  itemsCollection: Observable<any[]>;
-  noteDoc: Observable<{}>;
-  feeds: Subscription;
   feedCol: Observable<any[]>;
-  sub: any;
+  itemsCollection: Observable<any[]>;
   unfollow: Subscription;
   follow: Subscription;
   items: Observable<Post[]>;
-  toggleFollowRef: any;
 
   private followerCol: AngularFirestoreCollection<Follower>;
   follower: Observable<FollowerId[]>;
@@ -52,15 +48,13 @@ export class TestComponent implements OnInit {
   private unfollowerCol: AngularFirestoreCollection<Follower>;
   unfollower: Observable<FollowerId[]>;
   unfollowerSub: Subscription;
-
-
   content: string;
   constructor(
     private toast: ToastService,
     private auth: AuthService,
     private readonly afs: AngularFirestore,
     private db: FirebaseService) {
-    this.feedCol = this.db.colWithIds$(`feed/${this.auth.uid}/posts`,
+    this.feedCol = this.db.colWithIdsAdded$(`feed/${this.auth.uid}/posts`,
       ref => ref.orderBy('createdAt', 'desc'));
   }
 
@@ -75,9 +69,10 @@ export class TestComponent implements OnInit {
     this.unfollowerSub.unsubscribe();
     console.log(`onDestroy`);
   }
-  getItems(ids: number[]): Observable<Post> {
-    return from(ids).pipe(
-      concatMap(id => <Observable<Post>>this.db.doc$(`post/${id}`))
+  getItems(refs: string[]): Observable<Post> {
+    return from(refs).pipe(
+      tap(val => console.log(val)),
+      concatMap(ref => <Observable<Post>>this.db.doc$(ref))
     );
   }
   feedLiveUpdater() {
@@ -216,7 +211,7 @@ export class TestComponent implements OnInit {
       // Add followed user to the 'following' list.
       const startedToFollow = new Date();
       const followingRef = db.doc(`/people/${this.auth.uid}/following/${followedUserId}`);
-      batch.set(followingRef, { lastPost: lastPostId, createdAt: startedToFollow});
+      batch.set(followingRef, { lastPost: lastPostId, createdAt: startedToFollow });
       // Add signed-in user to the list of followers.
       const followRef = db.doc(`/followers/${this.auth.uid}_${followedUserId}`);
       batch.set(followRef, { follow: true });
