@@ -10,15 +10,15 @@
 </mat-card>
 <button (click)="followUser('njcHiz8vz4fI5qVtIRgKGdKqxWF2')" mat-button>follow</button>
 <button (click)="unFollowUser('njcHiz8vz4fI5qVtIRgKGdKqxWF2')" mat-button>unfollow</button>
-<mat-card>
+<!-- <mat-card>
   posts:
   <div *ngFor="let post of posts$ | async">
       {{post.author.displayName}} - {{post.content}}
   </div>
-</mat-card>
+</mat-card> -->
 <mat-card>
   feed:
-  <div *ngFor="let feed of feed$ | async">
+  <div *ngFor="let feed of feed | async">
     {{feed.author.displayName}} - {{feed.content}}
   </div>
 </mat-card>

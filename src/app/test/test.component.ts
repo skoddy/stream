@@ -26,6 +26,7 @@ export interface PostId extends Post { id: string; }
   styleUrls: ['./test.component.css']
 })
 export class TestComponent implements OnInit {
+  feed$: AngularFirestoreCollection<{}>;
   sub: any;
   unfollow: Subscription;
   follow: Subscription;
@@ -44,14 +45,19 @@ export class TestComponent implements OnInit {
   private unfollowerCol: AngularFirestoreCollection<Follower>;
   unfollower: Observable<FollowerId[]>;
   unfollowerSub: Subscription;
+
+  private feedCol: AngularFirestoreCollection<Post>;
+  feed: Observable<PostId[]>;
+  feedSub: Subscription;
   content: string;
   constructor(
     private toast: ToastService,
     private auth: AuthService,
     private readonly afs: AngularFirestore) {
+      this.feedCol = this.afs.collection<Post>(`/feed/${this.auth.uid}/posts`,
+      ref => ref.orderBy('createdAt', 'desc'));
 
-
-
+    this.feed = this.feedCol.valueChanges();
 
   }
 
@@ -94,17 +100,18 @@ export class TestComponent implements OnInit {
           _postData.forEach(postData => {
             if (postData) {
               const postDate = postData.createdAt.getTime();
-              const lastPostDate = followingData.lastPost.getTime();
+              const lastPostDate = followingData.lastPost ? followingData.lastPost.getTime() : null;
               console.log('prüfe ob neue posts...');
               if (postDate !== lastPostDate) {
                 console.log('neue posts - starte update...');
                 const db = firebase.firestore();
                 const batch = db.batch();
                 const feedsRef = db.doc(`/feed/${this.auth.uid}/posts/${postData.id}`);
-                batch.set(feedsRef, { value: true });
+                console.log(`/feed/${this.auth.uid}/posts/${postData.id}`);
+                batch.set(feedsRef, postData);
                 const followRef = db.doc(`/people/${this.auth.uid}/following/${followedUid}`);
                 batch.set(followRef, { lastPost: postData.createdAt });
-                // batch.commit();
+                batch.commit();
               } else {
                 console.log('keine neuen posts...');
               }
@@ -140,11 +147,18 @@ export class TestComponent implements OnInit {
     this.unfollowerSub.unsubscribe();
     console.log(`onDestroy`);
   }
+
+
+  getPostData(postId) {
+    return this.afs.doc(`/posts/${postId}`).valueChanges();
+  }
   newPost(content?: string) {
     console.log('<New Post>');
     const ref = firebase.firestore().collection('posts').doc();
     const newPostKey = ref.id;
     const update = {};
+    const db = firebase.firestore();
+    const batch = db.batch();
     const data = {
       key: newPostKey,
       content: content,
@@ -155,41 +169,48 @@ export class TestComponent implements OnInit {
         photoURL: this.auth.photoURL
       }
     };
-    update[`/posts/${newPostKey}`] = data;
-    update[`/people/${this.auth.uid}/posts/${newPostKey}`] = data;
-    update[`/feed/${this.auth.uid}/posts/${newPostKey}`] = data;
-    console.log('</New Post>');
-    // return this.db.batch(update, 'set').then(() => newPostKey);
+    const postDocRef = this.afs.doc(`/people/${this.auth.uid}/posts/${newPostKey}`);
+    const myPostsRef = db.doc(`/people/${this.auth.uid}/posts/${newPostKey}`);
+    const allPostsRef = db.doc(`/posts/${newPostKey}`);
+    const myFeedRef = db.doc(`/feed/${this.auth.uid}/posts/${newPostKey}`);
+    batch.set(myPostsRef, data);
+    batch.set(allPostsRef, data);
+    batch.set(myFeedRef, data);
+    return batch.commit();
   }
   followUser(followedUserId) {
-    const batch = firebase.firestore().batch();
+    const db = firebase.firestore();
+    const batch = db.batch();
     this.itemsCollection = this.afs.collection<Post>(`/people/${followedUserId}/posts`, ref => ref.orderBy('createdAt', 'desc'));
     this.items = this.itemsCollection.valueChanges();
 
     this.follow = this.items.subscribe(data => {
-      let lastPostId: string;
+      let lastPostId = new Date();
       console.log('follow: ' + followedUserId);
       // Add followed user's posts to the home feed.
       data.forEach(post => {
-        const postsRef = firebase.firestore().doc(`/feed/${this.auth.uid}/posts/${post.id}`);
-        batch.set(postsRef, post);
-        lastPostId = post.createdAt;
-        console.log('lastpostId: ' + lastPostId);
+        if (post) {
+          const postsDoc = db.doc(`/feed/${this.auth.uid}/posts/${post.id}`);
+          batch.set(postsDoc, post);
+          lastPostId = post.createdAt;
+          console.log('lastpostId: ' + lastPostId);
+        }
       });
+
       // Add followed user to the 'following' list.
-      const followingRef = firebase.firestore().doc(`/people/${this.auth.uid}/following/${followedUserId}`);
+      const followingRef = db.doc(`/people/${this.auth.uid}/following/${followedUserId}`);
       batch.set(followingRef, { lastPost: lastPostId });
       // Add signed-in user to the list of followers.
-      const followRef = firebase.firestore().doc(`/followers/${this.auth.uid}_${followedUserId}`);
+      const followRef = db.doc(`/followers/${this.auth.uid}_${followedUserId}`);
       batch.set(followRef, { follow: true });
       this.follow.unsubscribe();
       return batch.commit();
     });
   }
-
+// TODO: unfollow löscht posts nicht"!!!!!!!!!!!!!!
   unFollowUser(followedUserId) {
     const batch = firebase.firestore().batch();
-    this.itemsCollection = this.afs.collection<Post>(`/people/${followedUserId}/posts`, ref => ref.orderBy('createdAt', 'desc'));
+    this.itemsCollection = this.afs.collection<Post>(`/people/${followedUserId}/posts`);
     this.items = this.itemsCollection.valueChanges();
     this.unfollow = this.items.subscribe(data => {
       const updateData = {};
@@ -198,6 +219,8 @@ export class TestComponent implements OnInit {
       data.forEach(post => {
         const postsRef = firebase.firestore().doc(`/feed/${this.auth.uid}/posts/${post.id}`);
         batch.delete(postsRef);
+        console.log(`/feed/${this.auth.uid}/posts/${post.id}`);
+        console.log(postsRef);
       });
       // Remove followed user to the 'following' list.
       const followingRef = firebase.firestore().doc(`/people/${this.auth.uid}/following/${followedUserId}`);
